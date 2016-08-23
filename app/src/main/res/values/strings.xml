@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">ViSRA</string>
+    <string-array name="facilites">
+        <item>Noble Park</item>
+        <item>Clayton Park</item>
+        <item>Caulfield Park</item>
+        <item>Oakleigh Park</item>
+    </string-array>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_maps">Map</string>
+</resources>

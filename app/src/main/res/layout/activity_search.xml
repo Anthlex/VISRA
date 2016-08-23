@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Search Facilities"
+        android:id="@+id/searchact_textView2"
+        android:gravity="center"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPostalAddress"
+        android:hint="Please input your suburb"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:id="@+id/searchact_editText_suburb"
+        android:layout_below="@+id/searchact_textView2"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/searchact_editText_sports"
+        android:hint="Sport types"
+        android:layout_below="@+id/searchact_editText_suburb"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+    <!--<SeekBar-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/searchact_seekBar"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_below="@+id/searchact_editText2"-->
+        <!--android:layout_alignParentEnd="true" />-->
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="#ffffff"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Indoor"
+        android:layout_marginTop="20dp"
+        android:id="@+id/searchact_checkBox_indoor"
+        android:layout_below="@+id/searchact_editText_sports"
+        android:layout_alignParentStart="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Outdoor"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="60dp"
+        android:id="@+id/searchact_checkBox_outdoor"
+        android:layout_below="@+id/searchact_editText_sports"
+        android:layout_toEndOf="@+id/searchact_checkBox_indoor" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:id="@+id/button2_actsearch"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true" />
+
+    <!--<Spinner-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:id="@+id/searchact_spinner"-->
+        <!--android:layout_below="@+id/searchact_checkBox"-->
+        <!--android:layout_alignParentStart="true" />-->
+</RelativeLayout>

@@ -1,0 +1,210 @@
+package com.monash.eric.mytestingdemo;
+
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+import javax.net.ssl.HttpsURLConnection;
+
+public class SearchActivity extends AppCompatActivity {
+
+    private static final String BASE_URI = "http://visra9535.cloudapp.net/api/searchall";
+    private EditText et_suburb;
+    private EditText et_sprot;
+    private CheckBox cb_indoor;
+    private CheckBox cb_outdoor;
+
+    private String intentStr ="";
+
+    JSONObject jObject = null;
+    JSONArray jArray = null;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_search);
+
+        et_suburb = (EditText)findViewById(R.id.searchact_editText_suburb);
+        et_sprot = (EditText)findViewById(R.id.searchact_editText_sports);
+        cb_indoor = (CheckBox)findViewById(R.id.searchact_checkBox_indoor);
+        cb_outdoor = (CheckBox)findViewById(R.id.searchact_checkBox_outdoor);
+
+
+
+        Button button = (Button) this.findViewById(R.id.button2_actsearch);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("aa", "hello");
+                if(et_suburb.getText().toString().equals(""))
+                {
+                    Log.i("aa", "empty");
+                }
+                Log.i("aa", et_suburb.getText().toString());
+
+
+                CallSearchSprostAPI callSearchSprostAPI = new CallSearchSprostAPI();
+                callSearchSprostAPI.execute("aa");
+
+
+
+
+            }
+        });
+    }
+
+
+    private class CallSearchSprostAPI extends AsyncTask<String,Void,String>
+    {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            return  callSearchSportsWS(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+
+            intentStr = s;
+
+            Intent intent = new Intent();
+            Log.i("TESTBACK",intentStr);
+            intent.putExtra("result", intentStr);
+            SearchActivity.this.setResult(RESULT_OK, intent);
+            //关闭Activity
+            SearchActivity.this.finish();
+        }
+    }
+
+
+
+    protected String callSearchSportsWS(String subrubs)
+    {
+        HashMap<String, String> postDataParams = new HashMap<>();
+        if(!et_suburb.getText().toString().equals(""))
+        {
+            postDataParams.put("suburbs",et_suburb.getText().toString());
+
+        }
+
+        if(!et_sprot.getText().toString().equals(""))
+        {
+            Log.i("sports",et_sprot.getText().toString());
+            postDataParams.put("sports",et_sprot.getText().toString());
+
+        }
+
+        if (cb_indoor.isChecked() && cb_outdoor.isChecked())
+        {
+            Log.i("a","nothing");
+        }
+        else if(!cb_indoor.isChecked() && !cb_outdoor.isChecked())
+        {
+
+        }
+        else if(cb_indoor.isChecked())
+        {
+            postDataParams.put("indoor","1");
+
+        }
+        else
+        {
+            Log.i("a","outdoor clicked");
+
+            postDataParams.put("indoor","0");
+
+        }
+
+       // postDataParams.put("sports","baseball");
+
+        URL url;
+        String response = "";
+        try {
+            url = new URL(BASE_URI);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(15000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(getPostDataString(postDataParams));
+
+            writer.flush();
+            writer.close();
+            os.close();
+            int responseCode=conn.getResponseCode();
+
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                String line;
+                BufferedReader br=new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                while ((line=br.readLine()) != null) {
+                    response+=line;
+                    System.out.println(response);
+                }
+            }
+            else {
+                response="";
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response;
+
+    }
+
+    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+        for(Map.Entry<String, String> entry : params.entrySet()){
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+        }
+
+        System.out.println("RequestPara : " + result.toString());
+
+        return result.toString();
+    }
+}
