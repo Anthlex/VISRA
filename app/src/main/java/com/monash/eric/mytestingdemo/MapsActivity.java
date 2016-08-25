@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -24,7 +25,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
 
     private static final String WEATHER_API_BASE ="http://api.openweathermap.org/data/2.5/weather?";
@@ -39,11 +40,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     String FieldSurfaceType;
     int facility_age;
     String weather;
+    Double temp;
 
 
-    private TextView sport;
-    private TextView field;
-    private TextView age;
+
+    private TextView temperature_tv;
+    private TextView field_tv;
+    private TextView facility_name_tv;
     private TextView weather_tv;
 
     private GoogleMap mMap;
@@ -54,26 +57,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
 
 
-
-        sport = (TextView)findViewById(R.id.sport);
-        field = (TextView)findViewById(R.id.field);
-        age = (TextView)findViewById(R.id.ager);
-        weather_tv = (TextView)findViewById(R.id.weather_name);
+        facility_name_tv = (TextView) findViewById(R.id.tv_mapact_facility_name);
+        field_tv = (TextView)findViewById(R.id.field_type);
+        weather_tv=(TextView)findViewById(R.id.weather_name);
+        temperature_tv=(TextView)findViewById(R.id.temperature);
 
 
         Intent intent = getIntent();
         longtitude = intent.getDoubleExtra("Longitude",0);
         latitude = intent.getDoubleExtra("Latitude",0);
         facility_name = intent.getStringExtra("FacilityName");
-        SportsPlayed = intent.getStringExtra("SportsPlayed");
+       // SportsPlayed = intent.getStringExtra("SportsPlayed");
         FieldSurfaceType =intent.getStringExtra("FieldSurfaceType");
-        facility_age = intent.getIntExtra("FacilityAge",0);
+        //facility_age = intent.getIntExtra("FacilityAge",0);
 
-        Log.i("age11",facility_age + " sdasd" );
+        facility_name_tv.setText(facility_name);
+        field_tv.setText(FieldSurfaceType);
+        weather_tv.setText("Not avilable now");
 
-        sport.setText(SportsPlayed);
-        field.setText(FieldSurfaceType);
-        age.setText(facility_age+"");
+        temperature_tv.setText("Not avilable now");
+        //sport.setText(SportsPlayed);
+       // field.setText(FieldSurfaceType);
+       // age.setText(facility_age+"");
 
         CallWeatherAPIProcess callWeatherAPIProcess = new CallWeatherAPIProcess();
         callWeatherAPIProcess.execute(new String[]{latitude+"", longtitude+""});
@@ -107,13 +112,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude,longtitude),14.0f));
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+
             return;
         }
         mMap.setMyLocationEnabled(true);
@@ -149,7 +148,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            //addRecordBtn.setEnabled(true);
+
+            Log.i("degug","onpost");
+            temperature_tv.setText(temp.intValue()+" ℃");
+            weather_tv.setText(weather);
+
+            //proximity shower rain
 
         }
     }
@@ -159,6 +163,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         URL url = null;
         HttpURLConnection conn = null;
         String textResult = "";
+        Log.i("debug","heoolo");
+
 
         try {
 
@@ -190,7 +196,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //JSONObject jsonWeatherMain = jsonObj_weather.getJSONObject("main");
 
             weather =  getWeatherFromJson(jsonObj_weather);
+
+
+            Log.i("debug",weather);
             weather_tv.setText(weather);
+            temperature_tv.setText(temp+" ℃");
 
             return "ok";
         } catch (Exception e) {
@@ -209,6 +219,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        Log.i("weathertest",weather.toString());
 
         Log.i("weathertest",weather.getJSONArray("weather").getJSONObject(0).getString("description").toString());
+        Log.i("weathertest","inside transjosn");
+
+        JSONObject jsonWeatherMain = weather.getJSONObject("main");
+
+        temp = jsonWeatherMain.getDouble("temp")-273.15;
+        Log.i("weathertest",temp+"");
+
         //weather.getJSONObject("weather");
         return weather.getJSONArray("weather").getJSONObject(0).getString("description").toString();
     }

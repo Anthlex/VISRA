@@ -6,6 +6,7 @@
     android:layout_marginLeft="20dp"
     android:layout_marginRight="20dp"
     android:gravity="center_horizontal"
+    android:padding="20dp"
     android:orientation="vertical"
     android:background="#eaecee"
     android:weightSum="1">
