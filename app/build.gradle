@@ -3,19 +3,25 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
-
     defaultConfig {
         applicationId "com.monash.eric.mytestingdemo"
-        minSdkVersion 21
-        targetSdkVersion 24
+        minSdkVersion 19
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
+    }
+    dexOptions {
+        javaMaxHeapSize "2g"
     }
 }
 
@@ -25,4 +31,15 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.1.1'
     compile 'com.android.support:support-v4:24.1.1'
     compile 'com.google.android.gms:play-services:9.4.0'
+
+    compile 'com.android.support:appcompat-v7:24.2.0'
+    compile 'com.google.firebase:firebase-auth:9.2.0'
+    compile 'com.google.firebase:firebase-database:9.2.0'
+    compile 'com.google.firebase:firebase-crash:9.2.0'
+    compile 'com.google.firebase:firebase-core:9.2.0'
+    compile 'com.android.support:design:24.2.0'
+    compile 'com.firebase:firebase-client-android:2.3.1'
+    compile 'com.google.code.gson:gson:2.7'
 }
+
+apply plugin: 'com.google.gms.google-services'

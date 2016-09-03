@@ -5,12 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -25,52 +24,96 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Scanner;
 
 
 public class FragmentTab_facility extends ListFragment {
 
-    public ArrayList<Integer> facIdList = null;
-    public ArrayList<String> facilityList = null;
 
-    LocationManager locationManager;
-    LocationListener locationListener;
-    private static final String TAG = "Debug";
+    private static final String TAG = "FragmentTab_facility aa";
 
+    //A list stores the facilities IDs
+    ArrayList<Integer> facIdList = null;
 
-    public HashMap<Integer, String> hashmap = null;
+    //A list stores the facilities names
+    ArrayList<String> facilityList = null;
     ArrayAdapter<String> adapter;
     JSONObject jObject = null;
     JSONArray jArray = null;
+
+
+    //variables for coordinates
+    double curr_longtitude_from_main;
+    double curr_latitude_from_main;
+
+    //get current location
+    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
+
+    private Location mLastLocation;
+
+    // Google client to interact with Google API
+    private GoogleApiClient mGoogleApiClient;
+
+    private LocationRequest mLocationRequest;
+
+    // Location updates intervals in sec
+    private static int UPDATE_INTERVAL = 10000; // 10 sec
+    private static int FATEST_INTERVAL = 5000; // 5 sec
+    private static int DISPLACEMENT = 10; // 10 meters
+
+
+    ///////tesing inter comm
+    OnHeadlineSelectedListener mCallback;
+
+    String temp;
+
+    // Container Activity must implement this interface
+    public interface OnHeadlineSelectedListener {
+        public double getLongtitude();
+
+        public double getLatiitude();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        // This makes sure that the container activity has implemented
+        // the callback interface. If not, it throws an exception
+        try {
+            mCallback = (OnHeadlineSelectedListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        Log.d(TAG,"FragmentTab_facility on create ");
 
-        locationManager = (LocationManager) getContext().getSystemService(Context.LOCATION_SERVICE);
-
-        locationListener = new MyLocationListener();
-        if (ActivityCompat.checkSelfPermission(getActivity().getBaseContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getBaseContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            Log.i("permission","deny");
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
 
     }
 
@@ -78,41 +121,62 @@ public class FragmentTab_facility extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
+
         View view = inflater.inflate(R.layout.fragment_layout_facilities, null);
-//        adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,names);
+
+
+
+
+
+//        curr_longtitude_from_main = getArguments().getDouble("lng");
+//        curr_latitude_from_main = getArguments().getDouble("lat");
 //
-//        setListAdapter(adapter);
-//        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //((FragmentActivity)getActivity()).getActionBar().setDisplayHomeAsUpEnabled(true);
+//
+
+
+        //callGeoWS(curr_longtitude_from_main,curr_latitude_from_main)
+
         Button button = (Button) view.findViewById(R.id.button2_fragmentfac);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                //            Log.d("MyApp","I am here");
+                Log.d(TAG,"facility page on create view ON CLICK");
+                curr_longtitude_from_main = mCallback.getLongtitude();
+                curr_latitude_from_main = mCallback.getLatiitude();
+
+                Log.d(TAG,curr_longtitude_from_main + " abc " + curr_latitude_from_main);
+
+
+
                 SearchFacility();
 
             }
         });
 
 
+
+
+        Log.d(TAG,"facility page on create view");
+
         return view;
     }
 
     public void SearchFacility() {
         Intent intent = new Intent(getActivity(), SearchActivity.class);
-        startActivityForResult(new Intent(getActivity(), SearchActivity.class), 1);
+        intent.putExtra("lng",curr_longtitude_from_main);
+        intent.putExtra("lat",curr_latitude_from_main);
+        startActivityForResult(intent, 1);
     }
 
 
+    //receive the Json Response
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        Log.i(TAG,resultCode+"");
-
         if(resultCode == Activity.RESULT_OK) {
             String JsonResult = data.getStringExtra("result");
-            //   Log.i("rESUKT", JsonResult);
             updateList(JsonResult);
         }
 
@@ -124,15 +188,10 @@ public class FragmentTab_facility extends ListFragment {
         super.onDestroyView();
     }
 
+    // send the data of a clicked item to map activity
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
 
-
-        if (ActivityCompat.checkSelfPermission(getActivity().getBaseContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity().getBaseContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            return;
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, locationListener);
 
         int facilityid = facIdList.get(position);
         Intent intent = new Intent(getActivity(), MapsActivity.class);
@@ -143,14 +202,11 @@ public class FragmentTab_facility extends ListFragment {
                 jObject = jArray.getJSONObject(i);
                 if(facilityid == jObject.getInt("ViSRA_ID") )
                 {
-                    //FieldSurfaceType
-                    Log.i("match",facilityid + "");
-                    Log.i("match",jObject.getString("FacilityName") + "");
+
                     intent.putExtra("SportsPlayed",jObject.getString("SportsPlayed"));
                     intent.putExtra("FacilityName",jObject.getString("FacilityName"));
                     intent.putExtra("Longitude",jObject.getDouble("X"));
                     intent.putExtra("Latitude",jObject.getDouble("Y"));
-                    Log.i("age",jObject.getInt("FacilityAge") + " sdasd" );
                     intent.putExtra("FacilityAge",jObject.getInt("FacilityAge"));
                     intent.putExtra("FieldSurfaceType",jObject.getString("FieldSurfaceType"));
                     intent.putExtra("Changerooms",jObject.getInt("Changerooms"));
@@ -165,64 +221,17 @@ public class FragmentTab_facility extends ListFragment {
 
         startActivity(intent);
 
-
-
     }
 
-    private class MyLocationListener implements LocationListener {
-
-        @Override
-        public void onLocationChanged(Location loc) {
-
-            Toast.makeText(
-                    getActivity().getBaseContext(),
-                    "Location changed: Lat: " + loc.getLatitude() + " Lng: "
-                            + loc.getLongitude(), Toast.LENGTH_LONG).show();
-            String longitude = "Longitude: " + loc.getLongitude();
-            Log.i("opopopo", longitude);
-            String latitude = "Latitude: " + loc.getLatitude();
-            Log.i("opopopo", latitude);
-
-        /*------- To get city name from coordinates -------- */
-            String cityName = null;
-            Geocoder gcd = new Geocoder(getActivity().getBaseContext(), Locale.getDefault());
-            List<Address> addresses;
-            try {
-                addresses = gcd.getFromLocation(loc.getLatitude(),
-                        loc.getLongitude(), 1);
-                if (addresses.size() > 0) {
-                    System.out.println(addresses.get(0).getLocality());
-                    cityName = addresses.get(0).getLocality();
-                }
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-            String s = longitude + "\n" + latitude + "\n\nMy Current City is: "
-                    + cityName;
-            //editLocation.setText(s);
-            Log.i(TAG,s);
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {}
-
-        @Override
-        public void onProviderEnabled(String provider) {}
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {}
-    }
-
+    //display the result from JSON response
     public void updateList(String JsonString)
     {
         if(!JsonString.equals("")) {
 
-
             facIdList = new ArrayList<>();
             facilityList = new ArrayList<>();
 
-
+            //convert string to JSONArray
             try {
                 jArray = new JSONArray(JsonString);
             } catch (JSONException e) {
@@ -236,8 +245,7 @@ public class FragmentTab_facility extends ListFragment {
                     jObj = jArray.getJSONObject(i);
                     facIdList.add(jObj.getInt("ViSRA_ID"));
                     facilityList.add(jObj.getString("FacilityName"));
-                    //System.out.println(i + " id : " + jObj.getInt("ViSRA_ID"));
-                   // System.out.println(i + " att1 : " + jObj.getString("FacilityName"));
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -248,6 +256,7 @@ public class FragmentTab_facility extends ListFragment {
 
             setListAdapter(adapter);
         }
+        //No matching result, clear the list and pop up a message
         else
         {
             facilityList.clear();
@@ -258,14 +267,41 @@ public class FragmentTab_facility extends ListFragment {
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+
+
+    }
 
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
 
+        curr_longtitude_from_main = mCallback.getLongtitude();
+        curr_latitude_from_main = mCallback.getLatiitude();
+        Log.d(TAG,curr_longtitude_from_main + " egf " + curr_latitude_from_main);
+        //  checkPlayServices();
+//        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
+//            startLocationUpdates();
+//        }
+    }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+//        if (mGoogleApiClient.isConnected()) {
+//            mGoogleApiClient.disconnect();
+//        }
+    }
 
-
-
+    @Override
+    public void onPause() {
+        super.onPause();
+        //stopLocationUpdates();
+    }
 
 
 
