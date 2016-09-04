@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +34,21 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class SearchActivity extends AppCompatActivity {
 
+
+    //Google GeoCoding URL Setitings
+    private static final String GEO_BASE_URI = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
+
+    //GeoCoding Response
+    String geoCodingResponse;
+
+    private static final String API_KEY = "AIzaSyCxzmhZsWml6UQUqK_ss8aPvPzBk1u-YrU";
+
+    private static final String TAG = "SearchActivity";
+
+    public double lng = 0;
+    public double lat = 0;
+
+
     private static final String BASE_URI = "http://visra9535.cloudapp.net/api/searchall";
     private EditText et_suburb;
     private EditText et_sprot;
@@ -39,6 +56,8 @@ public class SearchActivity extends AppCompatActivity {
     private CheckBox cb_outdoor;
 
     private String intentStr ="";
+
+    private String suburb;
 
     JSONObject jObject = null;
     JSONArray jArray = null;
@@ -58,17 +77,27 @@ public class SearchActivity extends AppCompatActivity {
 
 
 
+        Intent intent = getIntent();
+        lng = intent.getDoubleExtra("lng",0);
+        lat = intent.getDoubleExtra("lat",0);
+
+        Log.i(TAG, lng + " " + lat );
+        CallGeoWS callGeoWS = new CallGeoWS();
+        callGeoWS.execute(lng,lat);
+
+
+
         Button button = (Button) this.findViewById(R.id.button2_actsearch);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.i("aa", "hello");
                 if(et_suburb.getText().toString().equals(""))
                 {
                     Log.i("aa", "empty");
                 }
                 Log.i("aa", et_suburb.getText().toString());
 
+                Log.d(TAG,"insearchactvity");
 
                 CallSearchSprostAPI callSearchSprostAPI = new CallSearchSprostAPI();
                 callSearchSprostAPI.execute("aa");
@@ -78,6 +107,10 @@ public class SearchActivity extends AppCompatActivity {
 
             }
         });
+
+
+
+
     }
 
 
@@ -144,8 +177,6 @@ public class SearchActivity extends AppCompatActivity {
 
         }
 
-       // postDataParams.put("sports","baseball");
-
         URL url;
         String response = "";
         try {
@@ -206,5 +237,104 @@ public class SearchActivity extends AppCompatActivity {
         System.out.println("RequestPara : " + result.toString());
 
         return result.toString();
+    }
+
+
+    private String callGeoWS(double lng, double lat)
+    {
+
+        URL url = null;
+        HttpURLConnection conn = null;
+        String textResult = "";
+
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(GEO_BASE_URI);
+            sb.append(lng);
+            sb.append(",");
+            sb.append(lat);
+            sb.append("&key=");
+            sb.append(API_KEY);
+
+
+            // Gson gson = new Gson();
+            //convert course entity to string json by calling toJson method
+            //   String stringRegistrationJson = gson.toJson(registration);
+            //  Log.i("EricTestRegJSON", stringRegistrationJson);
+//            url = new URL ("https://maps.googleapis.com/maps/api/geocode/json?address=" +
+//                    URLEncoder.encode(address + " Australia ", "utf8")+"&region=au"+"&key="+APIKEY);
+
+            Log.d(TAG,sb.toString());
+
+            url = new URL(sb.toString());
+
+            conn = (HttpURLConnection) url.openConnection();
+            //set the timeout
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            //set the connection method to POST
+            conn.setRequestMethod("GET");
+            //set the output to true
+            conn.setDoOutput(true);
+            //Read the response
+            Scanner inStream = new Scanner(conn.getInputStream());
+            //read the input steream and store it as string
+            while (inStream.hasNextLine()) {
+                textResult += inStream.nextLine();
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.disconnect();
+        }
+
+        return textResult;
+    }
+
+
+    private class CallGeoWS extends AsyncTask<Double,Void,String>
+    {
+
+        @Override
+        protected String doInBackground(Double... params) {
+
+            return callGeoWS(params[0],params[1]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            getSuburbFromJson(result);
+            et_suburb.setText(suburb);
+            Log.i(TAG,result);
+        }
+    }
+
+
+    private String getSuburbFromJson(String originalJson)
+    {
+
+
+        Gson gson = new Gson();
+        GeoResponse geoResponse = gson.fromJson(originalJson,GeoResponse.class);
+
+        GeoResponse.address_component[] element = geoResponse.results[0].address_components;
+
+        Log.d(TAG,element[0].long_name);
+
+        for(int i = 0 ; i<element.length; i++)
+        {
+
+            if(element[i].types[0].equals("locality"))
+            {
+                suburb = element[i].long_name;
+                Log.d(TAG,"asadasdasdadas");
+                Log.d(TAG,suburb);
+
+            }
+        }
+
+        return null;
     }
 }

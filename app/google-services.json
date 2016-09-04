@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "513211545988",
+    "firebase_url": "https://visra-1d74b.firebaseio.com",
+    "project_id": "visra-1d74b",
+    "storage_bucket": "visra-1d74b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:513211545988:android:827900ed848022a7",
+        "android_client_info": {
+          "package_name": "com.monash.eric.mytestingdemo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "513211545988-or6ie1fomiq81iev9opoqqegnnls20t8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.monash.eric.mytestingdemo",
+            "certificate_hash": "16809AE5476F21DE786FFB4699251B9402C2E9E3"
+          }
+        },
+        {
+          "client_id": "513211545988-ghk4g0r0hfkm4ep4rq8cd0619aqsjj1c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHWcp1j_9Uz4oAM9b7-S8gXZ3LZig0OBE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "513211545988-ghk4g0r0hfkm4ep4rq8cd0619aqsjj1c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
