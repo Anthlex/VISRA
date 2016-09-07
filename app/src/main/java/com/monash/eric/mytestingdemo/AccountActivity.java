@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -72,26 +73,37 @@ public class AccountActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-
                 Map<String,String> map = dataSnapshot.getValue(Map.class);
 
-                String username = "Not Set";
-                String gender = "Not Set";
-                String birthday = "Not Set";
-                String sports = "Not Set";
-                String country = "Not Set";
+                if(map == null){
 
-                username = map.get("Username");
-                gender = map.get("Gender");
-                birthday = map.get("Birthday");
-                sports = map.get("Sports");
-                country = map.get("Country");
+                    Toast.makeText(AccountActivity.this,"You have not set any profile yet, please set it!",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(AccountActivity.this, RegisterActivity.class));
+                }
+                else {
 
-                textViewUsername.setText("Name : " + username);
-                textViewGender.setText("Gender : " + gender);
-                textViewBirthday.setText("Birthday : " + birthday);
-                textViewSports.setText("Sport : " + sports);
-                textViewCountry.setText("Country : " + country);
+                    String username = map.get("Username");
+                    String gender = map.get("Gender");
+                    String birthday = map.get("Birthday");
+                    String sports = map.get("Sports");
+                    String country = map.get("Country");
+
+                    if (birthday == "") {
+                        textViewBirthday.setText("Birthday : ");
+                    } else {
+                        textViewBirthday.setText("Birthday : " + birthday);
+                    }
+
+                    if (gender == "") {
+                        textViewGender.setText("Gender : ");
+                    } else {
+                        textViewGender.setText("Gender : " + gender);
+                    }
+
+                    textViewUsername.setText("Name : " + username);
+                    textViewSports.setText("Sport : " + sports);
+                    textViewCountry.setText("Country : " + country);
+                }
 
 
 

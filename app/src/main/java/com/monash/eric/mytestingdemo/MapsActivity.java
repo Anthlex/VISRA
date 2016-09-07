@@ -6,7 +6,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -21,11 +24,13 @@ import org.json.JSONObject;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
 
+    public static final String TAG = "MapsActivity";
     //open weather map API KEYS AND URL
     private static final String WEATHER_API_BASE ="http://api.openweathermap.org/data/2.5/weather?";
     private static final String WEATHER_API_KEY ="0d9fffea542769114f53e78627a6e769";
@@ -43,12 +48,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     int facility_age;
     String weather_con;
     Double temp;
+    int changeRoom_num;
+
+    ArrayList<String> playedSportsList;
+
+    ArrayList<String> changeroomType;
 
 
     private TextView temperature_tv;
     private TextView field_tv;
     private TextView facility_name_tv;
     private TextView weather_tv;
+    private TextView changroom_tv;
+    private Button createEventBtn;
 
     private GoogleMap mMap;
 
@@ -57,11 +69,32 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        changeroomType = new ArrayList<>();
+        changeroomType.add("Male");
+        changeroomType.add("Female");
+        changeroomType.add("UniSex");
+        changeroomType.add("Umpire/Officials");
+        changeroomType.add("Not Available");
+
+
 
         facility_name_tv = (TextView) findViewById(R.id.tv_mapact_facility_name);
         field_tv = (TextView)findViewById(R.id.field_type);
         weather_tv=(TextView)findViewById(R.id.weather_name);
         temperature_tv=(TextView)findViewById(R.id.temperature);
+        changroom_tv = (TextView)findViewById(R.id.changeroom);
+        createEventBtn=(Button)findViewById(R.id.create_event_btn);
+        createEventBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(),CreateEventActivity.class);
+                intent.putExtra("facility_name",facility_name_tv.getText().toString());
+                intent.putExtra("lng",longtitude);
+                intent.putExtra("lat",latitude);
+                startActivity(intent);
+
+            }
+        });
 
         // get values passed from Search Activity
         Intent intent = getIntent();
@@ -69,11 +102,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         latitude = intent.getDoubleExtra("Latitude",0);
         facility_name = intent.getStringExtra("FacilityName");
         FieldSurfaceType =intent.getStringExtra("FieldSurfaceType");
+        playedSportsList = intent.getStringArrayListExtra("sportPlayedList");
+        changeRoom_num = intent.getIntExtra("Changerooms",4);
+
+
+
+        Log.d(TAG,changeRoom_num+"");
+        Log.d(TAG,changeroomType.size()+"");
+        Log.d(TAG,changeroomType.get(changeRoom_num)+"");
+
+
 
         facility_name_tv.setText(facility_name);
-        field_tv.setText(FieldSurfaceType);
+        field_tv.setText(TextUtils.join(",",playedSportsList));
         weather_tv.setText("Not avilable now");
         temperature_tv.setText("Not avilable now");
+        changroom_tv.setText(changeroomType.get(changeRoom_num));
 
 
         //call weather API

@@ -37,21 +37,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Login"
-            android:id="@+id/buttonLogin"/>
+            android:id="@+id/buttonLogin"
+            android:background="#4ECDC4"/>
 
         <Button
             android:layout_margin="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Register"
-            android:id="@+id/buttonRegister"/>
+            android:id="@+id/buttonRegister"
+            android:background="#4ECDC4"/>
 
         <Button
             android:layout_margin="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Continue without login"
-            android:id="@+id/buttonCancel"/>
+            android:id="@+id/buttonCancel"
+            android:background="#4ECDC4"/>
 
 
     </LinearLayout>

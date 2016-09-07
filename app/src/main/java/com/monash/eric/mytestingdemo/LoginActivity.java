@@ -32,6 +32,12 @@ public class LoginActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
+        if(firebaseAuth.getCurrentUser() != null){
+
+            startActivity(new Intent(LoginActivity.this,MainActivity.class));
+
+        }
+
         Button buttonRegister;
         Button buttonLogin;
         Button buttonCancel;
@@ -145,6 +151,14 @@ public class LoginActivity extends AppCompatActivity {
             Toast.makeText(this,"Please enter password", Toast.LENGTH_SHORT).show();
             //stopping the function execution further
             return;
+        }
+
+        if(email.matches("(\\W|^)[\\w.+\\-]{0,25}@(student.monash|monash)\\.edu(\\W|$)") == false){
+
+            Toast.makeText(this,"Please use Monash Email", Toast.LENGTH_SHORT).show();
+
+            return;
+
         }
 
         //if validation is ok

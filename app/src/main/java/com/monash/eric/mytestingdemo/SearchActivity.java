@@ -2,18 +2,20 @@ package com.monash.eric.mytestingdemo;
 
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -21,18 +23,19 @@ import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
 
     //Google GeoCoding URL Setitings
@@ -58,6 +61,7 @@ public class SearchActivity extends AppCompatActivity {
     private String intentStr ="";
 
     private String suburb;
+    private String sports;
 
     JSONObject jObject = null;
     JSONArray jArray = null;
@@ -71,7 +75,6 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         et_suburb = (EditText)findViewById(R.id.searchact_editText_suburb);
-        et_sprot = (EditText)findViewById(R.id.searchact_editText_sports);
         cb_indoor = (CheckBox)findViewById(R.id.searchact_checkBox_indoor);
         cb_outdoor = (CheckBox)findViewById(R.id.searchact_checkBox_outdoor);
 
@@ -109,8 +112,53 @@ public class SearchActivity extends AppCompatActivity {
         });
 
 
+        // Spinner element
+        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
+        // Spinner click listener
+        spinner.setOnItemSelectedListener(this);
+
+        // Spinner Drop down elements
+        List<String> categories = new ArrayList<String>();
+        categories.add("Soccer");
+        categories.add("Basketball");
+        categories.add("Table Tennis");
+        categories.add("Swimming");
+        categories.add("Badminton");
+        categories.add("Volleyball");
+        categories.add("Cricket");
+        categories.add("Snooker");
+        categories.add("Cycling");
+        categories.add("Hockey");
+        categories.add("Tennis");
+        categories.add("Rugby Union");
+        categories.add("Rugby Legue");
 
 
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinner.setAdapter(dataAdapter);
+
+
+
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        // On selecting a spinner item
+        sports = parent.getItemAtPosition(position).toString();
+
+        // Showing selected spinner item
+        //Toast.makeText(parent.getContext(), "Selected: " + sports, Toast.LENGTH_LONG).show();
+    }
+    public void onNothingSelected(AdapterView<?> arg0) {
+        // TODO Auto-generated method stub
     }
 
 
@@ -149,10 +197,9 @@ public class SearchActivity extends AppCompatActivity {
 
         }
 
-        if(!et_sprot.getText().toString().equals(""))
+        if(sports != null)
         {
-            Log.i("sports",et_sprot.getText().toString());
-            postDataParams.put("sports",et_sprot.getText().toString());
+            postDataParams.put("sports",sports);
 
         }
 

@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="textPostalAddress"
-        android:hint="Please input your suburb"
+        android:hint="Please input a suburb"
         android:layout_marginTop="20dp"
         android:ems="10"
         android:id="@+id/searchact_editText_suburb"
@@ -28,39 +28,34 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true" />
 
-    <EditText
-        android:layout_width="wrap_content"
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:id="@+id/spinner"
+        android:textSize="16sp"
+        android:layout_below="@+id/sportText"
+        android:prompt="@string/spinner_title"
+
+        >
+    </Spinner>
+
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/searchact_editText_sports"
-        android:hint="Sport types"
-        android:layout_below="@+id/searchact_editText_suburb"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:textSize="16sp"
+        android:text="Sport"
+        android:id="@+id/sportText"
+        android:layout_below="@+id/searchact_editText_suburb"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:layout_alignLeft="@+id/searchact_editText_sports"
+        android:layout_alignLeft="@+id/spinner"
         android:id="@+id/venue_textview"
         android:text="Venue Type"
-        android:layout_below="@+id/searchact_editText_sports"
+        android:layout_below="@+id/spinner"
         />
-
-    <!--<SeekBar-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/searchact_seekBar"-->
-        <!--android:layout_alignParentStart="true"-->
-        <!--android:layout_below="@+id/searchact_editText2"-->
-        <!--android:layout_alignParentEnd="true" />-->
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="2dp"-->
-        <!--android:layout_above="@+id/searchact_checkBox_indoor"-->
-        <!--android:background="#ffffff"/>-->
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -86,7 +81,8 @@
         android:id="@+id/button2_actsearch"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:background="#4ECDC4"/>
 
     <!--<Spinner-->
         <!--android:layout_width="wrap_content"-->

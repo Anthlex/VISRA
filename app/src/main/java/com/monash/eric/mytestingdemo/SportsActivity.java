@@ -41,6 +41,7 @@ public class SportsActivity extends AppCompatActivity {
         mRootRef = new Firebase("https://visra-1d74b.firebaseio.com/Users/"+uid);
 
         addListenerOnButton();
+
     }
 
     public void addListenerOnButton(){
@@ -116,6 +117,10 @@ public class SportsActivity extends AppCompatActivity {
 
 
                 Firebase childRef = mRootRef.child("Sports");
+
+                if(getResult() == ""){
+                    setResult(" Not set");
+                }
 
                 childRef.setValue(result.substring(1));
 

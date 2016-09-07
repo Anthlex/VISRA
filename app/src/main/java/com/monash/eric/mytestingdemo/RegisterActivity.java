@@ -4,12 +4,14 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
@@ -92,6 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+
         buttonCon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -99,8 +102,47 @@ public class RegisterActivity extends AppCompatActivity {
                 //Toast.makeText(RegisterActivity.this,uid,Toast.LENGTH_SHORT).show();
 
 
-                username = editTextUsername.getText().toString().trim();
+
                 country = editTextCountry.getText().toString().trim();
+                username = editTextUsername.getText().toString().trim();
+
+
+                if(TextUtils.isEmpty(username)){
+
+                    //email is empty
+                    Toast.makeText(RegisterActivity.this,"Please enter username", Toast.LENGTH_SHORT).show();
+                    //stopping the function execution further
+                    return;
+                }
+
+                if(TextUtils.isEmpty(gender)){
+
+                    //email is empty
+                    Toast.makeText(RegisterActivity.this,"Please select gender", Toast.LENGTH_SHORT).show();
+                    //stopping the function execution further
+                    return;
+                }
+
+
+
+                if(TextUtils.isEmpty(birthday)){
+
+                    //email is empty
+                    Toast.makeText(RegisterActivity.this,"Please enter birthday", Toast.LENGTH_SHORT).show();
+                    //stopping the function execution further
+                    return;
+                }
+
+
+                if(TextUtils.isEmpty(country)){
+
+                    //email is empty
+                    Toast.makeText(RegisterActivity.this,"Please enter country", Toast.LENGTH_SHORT).show();
+                    //stopping the function execution further
+                    return;
+                }
+
+
 
                 Firebase childRef = mRootRef.child(uid);
 

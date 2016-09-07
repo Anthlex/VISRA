@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -30,12 +31,19 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -43,19 +51,38 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Scanner;
+
+import javax.net.ssl.HttpsURLConnection;
 
 
 public class FragmentTab_facility extends ListFragment {
 
+    //Google GeoCoding URL Setitings
+    private static final String GEO_BASE_URI = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
 
-    private static final String TAG = "FragmentTab_facility aa";
+    private static final String API_KEY = "AIzaSyCxzmhZsWml6UQUqK_ss8aPvPzBk1u-YrU";
+
+    private static final String TAG = "FragmentTab_facility";
+
+    //url for backend connection
+    private static final String BASE_URI = "http://visra9535.cloudapp.net/api/searchall";
+    //url for finding playedsports by facilityname
+    private static final String URI_FIND_PLAYEDSPORTS = "http://visra9535.cloudapp.net/api/searchByName";
+
+
+    private Button newSearch;
+    private Button showNearby;
 
     //A list stores the facilities IDs
     ArrayList<Integer> facIdList = null;
 
     //A list stores the facilities names
     ArrayList<String> facilityList = null;
+
+    //A list stores all the playedsports in a certain facility
+    ArrayList<String> playedSportsList = null;
     ArrayAdapter<String> adapter;
     JSONObject jObject = null;
     JSONArray jArray = null;
@@ -65,26 +92,15 @@ public class FragmentTab_facility extends ListFragment {
     double curr_longtitude_from_main;
     double curr_latitude_from_main;
 
-    //get current location
-    private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
-
-    private Location mLastLocation;
-
-    // Google client to interact with Google API
-    private GoogleApiClient mGoogleApiClient;
-
-    private LocationRequest mLocationRequest;
-
-    // Location updates intervals in sec
-    private static int UPDATE_INTERVAL = 10000; // 10 sec
-    private static int FATEST_INTERVAL = 5000; // 5 sec
-    private static int DISPLACEMENT = 10; // 10 meters
-
-
     ///////tesing inter comm
     OnHeadlineSelectedListener mCallback;
 
+
+    private String selected_facility;
+    private String suburb;
     String temp;
+
+    Intent intentforMap;
 
     // Container Activity must implement this interface
     public interface OnHeadlineSelectedListener {
@@ -112,7 +128,7 @@ public class FragmentTab_facility extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        Log.d(TAG,"FragmentTab_facility on create ");
+        Log.d(TAG, "FragmentTab_facility on create ");
 
 
     }
@@ -122,11 +138,7 @@ public class FragmentTab_facility extends ListFragment {
                              Bundle savedInstanceState) {
 
 
-
         View view = inflater.inflate(R.layout.fragment_layout_facilities, null);
-
-
-
 
 
 //        curr_longtitude_from_main = getArguments().getDouble("lng");
@@ -137,17 +149,31 @@ public class FragmentTab_facility extends ListFragment {
 
         //callGeoWS(curr_longtitude_from_main,curr_latitude_from_main)
 
-        Button button = (Button) view.findViewById(R.id.button2_fragmentfac);
-        button.setOnClickListener(new View.OnClickListener() {
+        showNearby = (Button) view.findViewById(R.id.button2_showNearby);
+        showNearby.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                Log.d(TAG,"facility page on create view ON CLICK");
+                Log.d(TAG,"shownearbyClicked");
                 curr_longtitude_from_main = mCallback.getLongtitude();
                 curr_latitude_from_main = mCallback.getLatiitude();
 
-                Log.d(TAG,curr_longtitude_from_main + " abc " + curr_latitude_from_main);
+                CallGeoWS callGeoWS = new CallGeoWS();
+                callGeoWS.execute(curr_longtitude_from_main, curr_latitude_from_main);
 
+
+            }
+        });
+
+        newSearch = (Button) view.findViewById(R.id.button2_fragmentfac);
+        newSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Log.d(TAG, "facility page on create view ON CLICK");
+                curr_longtitude_from_main = mCallback.getLongtitude();
+                curr_latitude_from_main = mCallback.getLatiitude();
+
+                Log.d(TAG, curr_longtitude_from_main + " abc " + curr_latitude_from_main);
 
 
                 SearchFacility();
@@ -156,17 +182,15 @@ public class FragmentTab_facility extends ListFragment {
         });
 
 
-
-
-        Log.d(TAG,"facility page on create view");
+        Log.d(TAG, "facility page on create view");
 
         return view;
     }
 
     public void SearchFacility() {
         Intent intent = new Intent(getActivity(), SearchActivity.class);
-        intent.putExtra("lng",curr_longtitude_from_main);
-        intent.putExtra("lat",curr_latitude_from_main);
+        intent.putExtra("lng", curr_longtitude_from_main);
+        intent.putExtra("lat", curr_latitude_from_main);
         startActivityForResult(intent, 1);
     }
 
@@ -175,8 +199,9 @@ public class FragmentTab_facility extends ListFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK) {
             String JsonResult = data.getStringExtra("result");
+            Log.d(TAG,JsonResult);
             updateList(JsonResult);
         }
 
@@ -193,23 +218,23 @@ public class FragmentTab_facility extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
 
 
+        intentforMap = new Intent(getActivity(), MapsActivity.class);
+        playedSportsList = new ArrayList<>();
         int facilityid = facIdList.get(position);
-        Intent intent = new Intent(getActivity(), MapsActivity.class);
 
         for (int i = 0; i < jArray.length(); i++) {
 
             try {
                 jObject = jArray.getJSONObject(i);
-                if(facilityid == jObject.getInt("ViSRA_ID") )
-                {
+                if (facilityid == jObject.getInt("ViSRA_ID")) {
 
-                    intent.putExtra("SportsPlayed",jObject.getString("SportsPlayed"));
-                    intent.putExtra("FacilityName",jObject.getString("FacilityName"));
-                    intent.putExtra("Longitude",jObject.getDouble("X"));
-                    intent.putExtra("Latitude",jObject.getDouble("Y"));
-                    intent.putExtra("FacilityAge",jObject.getInt("FacilityAge"));
-                    intent.putExtra("FieldSurfaceType",jObject.getString("FieldSurfaceType"));
-                    intent.putExtra("Changerooms",jObject.getInt("Changerooms"));
+                    selected_facility = jObject.getString("FacilityName");
+                    intentforMap.putExtra("FacilityName", jObject.getString("FacilityName"));
+                    intentforMap.putExtra("Longitude", jObject.getDouble("X"));
+                    intentforMap.putExtra("Latitude", jObject.getDouble("Y"));
+                    intentforMap.putExtra("FacilityAge", jObject.getInt("FacilityAge"));
+                    intentforMap.putExtra("FieldSurfaceType", jObject.getString("FieldSurfaceType"));
+                    intentforMap.putExtra("Changerooms", jObject.getInt("Changerooms"));
 
                 }
 
@@ -219,14 +244,14 @@ public class FragmentTab_facility extends ListFragment {
 
         }
 
-        startActivity(intent);
+        executeFindPlayedSport();
+
 
     }
 
     //display the result from JSON response
-    public void updateList(String JsonString)
-    {
-        if(!JsonString.equals("")) {
+    public void updateList(String JsonString) {
+        if (!JsonString.equals("")) {
 
             facIdList = new ArrayList<>();
             facilityList = new ArrayList<>();
@@ -257,12 +282,11 @@ public class FragmentTab_facility extends ListFragment {
             setListAdapter(adapter);
         }
         //No matching result, clear the list and pop up a message
-        else
-        {
+        else {
             facilityList.clear();
             adapter.notifyDataSetChanged();
 
-            Toast.makeText(getContext(),"No Result",Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "No facilities found for your search criteria", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -275,14 +299,11 @@ public class FragmentTab_facility extends ListFragment {
     }
 
 
-
     @Override
     public void onResume() {
         super.onResume();
-
         curr_longtitude_from_main = mCallback.getLongtitude();
         curr_latitude_from_main = mCallback.getLatiitude();
-        Log.d(TAG,curr_longtitude_from_main + " egf " + curr_latitude_from_main);
         //  checkPlayServices();
 //        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
 //            startLocationUpdates();
@@ -304,5 +325,273 @@ public class FragmentTab_facility extends ListFragment {
     }
 
 
+    protected String callSearchSportsWS(String subrubs) {
+        HashMap<String, String> postDataParams = new HashMap<>();
+        postDataParams.put("suburbs",subrubs);
+        URL url;
+        String response = "";
+        try {
+            url = new URL(BASE_URI);
 
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(15000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(getPostDataString(postDataParams));
+
+            writer.flush();
+            writer.close();
+            os.close();
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                String line;
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                while ((line = br.readLine()) != null) {
+                    response += line;
+                }
+            } else {
+                response = "";
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return response;
+
+    }
+
+    private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
+        StringBuilder result = new StringBuilder();
+        boolean first = true;
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if (first)
+                first = false;
+            else
+                result.append("&");
+
+            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+        }
+
+        Log.d(TAG,result.toString());
+
+        return result.toString();
+    }
+
+
+    private String callGeoWS(double lng, double lat) {
+
+        URL url = null;
+        HttpURLConnection conn = null;
+        String textResult = "";
+
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(GEO_BASE_URI);
+            sb.append(lng);
+            sb.append(",");
+            sb.append(lat);
+            sb.append("&key=");
+            sb.append(API_KEY);
+
+
+            // Gson gson = new Gson();
+            //convert course entity to string json by calling toJson method
+            //   String stringRegistrationJson = gson.toJson(registration);
+            //  Log.i("EricTestRegJSON", stringRegistrationJson);
+//            url = new URL ("https://maps.googleapis.com/maps/api/geocode/json?address=" +
+//                    URLEncoder.encode(address + " Australia ", "utf8")+"&region=au"+"&key="+APIKEY);
+
+            Log.d(TAG, sb.toString());
+
+            url = new URL(sb.toString());
+
+            conn = (HttpURLConnection) url.openConnection();
+            //set the timeout
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            //set the connection method to POST
+            conn.setRequestMethod("GET");
+            //set the output to true
+            conn.setDoOutput(true);
+            //Read the response
+            Scanner inStream = new Scanner(conn.getInputStream());
+            //read the input steream and store it as string
+            while (inStream.hasNextLine()) {
+                textResult += inStream.nextLine();
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.disconnect();
+        }
+
+        return textResult;
+    }
+
+
+    private class CallGeoWS extends AsyncTask<Double, Void, String> {
+
+        @Override
+        protected String doInBackground(Double... params) {
+
+            return callGeoWS(params[0], params[1]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            getSuburbFromJson(result);
+            Log.i(TAG, result);
+            executeSerachSportAPI();
+        }
+    }
+
+    private String getSuburbFromJson(String originalJson) {
+
+
+        Gson gson = new Gson();
+        GeoResponse geoResponse = gson.fromJson(originalJson, GeoResponse.class);
+
+        GeoResponse.address_component[] element = geoResponse.results[0].address_components;
+
+
+        for (int i = 0; i < element.length; i++) {
+
+            if (element[i].types[0].equals("locality")) {
+                suburb = element[i].long_name;
+                Log.d(TAG, suburb);
+
+            }
+        }
+
+        return null;
+    }
+
+    private class CallSearchSprostAPI extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            return callSearchSportsWS(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+
+
+            updateList(s);
+
+        }
+
+
+    }
+
+
+    private class CallSearchSprostAPIFindSports extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            return callFindSportsListWS(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            try {
+                JSONArray jArraySports = new JSONArray(s);
+                for(int i = 0 ; i<jArraySports.length();i++)
+                {
+                    String playedsportsytemp = jArraySports.getJSONObject(i).getString("SportsPlayed");
+                    Log.d(TAG,playedsportsytemp);
+                    playedSportsList.add(playedsportsytemp);
+                }
+                intentforMap.putExtra("sportPlayedList",playedSportsList);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            startActivity(intentforMap);
+
+            //updateList(s);
+
+        }
+
+
+    }
+
+
+    protected String callFindSportsListWS(String facility_name) {
+        HashMap<String, String> postDataParams = new HashMap<>();
+        postDataParams.put("facility_name",facility_name);
+        URL url;
+        String response = "";
+        try {
+            url = new URL(URI_FIND_PLAYEDSPORTS);
+
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(15000);
+            conn.setConnectTimeout(15000);
+            conn.setRequestMethod("POST");
+            conn.setDoInput(true);
+            conn.setDoOutput(true);
+
+
+            OutputStream os = conn.getOutputStream();
+            BufferedWriter writer = new BufferedWriter(
+                    new OutputStreamWriter(os, "UTF-8"));
+            writer.write(getPostDataString(postDataParams));
+
+            writer.flush();
+            writer.close();
+            os.close();
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode == HttpsURLConnection.HTTP_OK) {
+                String line;
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                while ((line = br.readLine()) != null) {
+                    response += line;
+                }
+            } else {
+                response = "";
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Log.d(TAG,response);
+        return response;
+
+    }
+
+    public void executeSerachSportAPI()
+    {
+        CallSearchSprostAPI callSearchSprostAPI = new CallSearchSprostAPI();
+        callSearchSprostAPI.execute(suburb);
+    }
+
+    public void executeFindPlayedSport()
+    {
+        CallSearchSprostAPIFindSports callSearchSprostAPIFindSports = new CallSearchSprostAPIFindSports();
+        callSearchSprostAPIFindSports.execute(selected_facility);
+    }
+
+    public void populateSportsListFromJson(String jsonResponse)
+    {
+
+    }
 }

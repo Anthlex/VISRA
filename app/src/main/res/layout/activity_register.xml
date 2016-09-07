@@ -86,7 +86,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Continue"
-            android:id="@+id/buttonContinue"/>
+            android:id="@+id/buttonContinue"
+            android:background="#4ECDC4"/>
 
     </LinearLayout>
 
