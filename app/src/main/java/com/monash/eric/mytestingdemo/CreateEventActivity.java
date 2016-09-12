@@ -64,6 +64,7 @@ public class CreateEventActivity extends AppCompatActivity implements AdapterVie
 
         if(firebaseAuth.getCurrentUser() != null){
             //profile activity here
+            //TODO:
             uid = firebaseAuth.getCurrentUser().getUid();
 
         }else {

@@ -2,6 +2,7 @@ package com.monash.eric.mytestingdemo;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -102,6 +103,9 @@ public class FragmentTab_facility extends ListFragment {
 
     Intent intentforMap;
 
+    private ProgressDialog progressDialog;
+
+
     // Container Activity must implement this interface
     public interface OnHeadlineSelectedListener {
         public double getLongtitude();
@@ -154,6 +158,9 @@ public class FragmentTab_facility extends ListFragment {
             @Override
             public void onClick(View view) {
                 Log.d(TAG,"shownearbyClicked");
+                progressDialog = new ProgressDialog(getActivity());
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
                 curr_longtitude_from_main = mCallback.getLongtitude();
                 curr_latitude_from_main = mCallback.getLatiitude();
 
@@ -251,10 +258,11 @@ public class FragmentTab_facility extends ListFragment {
 
     //display the result from JSON response
     public void updateList(String JsonString) {
+        facIdList = new ArrayList<>();
+        facilityList = new ArrayList<>();
         if (!JsonString.equals("")) {
 
-            facIdList = new ArrayList<>();
-            facilityList = new ArrayList<>();
+
 
             //convert string to JSONArray
             try {
@@ -284,7 +292,14 @@ public class FragmentTab_facility extends ListFragment {
         //No matching result, clear the list and pop up a message
         else {
             facilityList.clear();
+
+            adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, facilityList);
+
+            setListAdapter(adapter);
+
             adapter.notifyDataSetChanged();
+
+
 
             Toast.makeText(getContext(), "No facilities found for your search criteria", Toast.LENGTH_SHORT).show();
         }
@@ -492,6 +507,7 @@ public class FragmentTab_facility extends ListFragment {
 
 
             updateList(s);
+            progressDialog.dismiss();
 
         }
 
