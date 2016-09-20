@@ -163,9 +163,9 @@ public class FragmentTab_facility extends ListFragment {
                 progressDialog.show();
                 curr_longtitude_from_main = mCallback.getLongtitude();
                 curr_latitude_from_main = mCallback.getLatiitude();
-
-                CallGeoWS callGeoWS = new CallGeoWS();
-                callGeoWS.execute(curr_longtitude_from_main, curr_latitude_from_main);
+//                commented for testing without gps
+//                CallGeoWS callGeoWS = new CallGeoWS();
+//                callGeoWS.execute(curr_longtitude_from_main, curr_latitude_from_main);
 
 
             }

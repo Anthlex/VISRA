@@ -1,8 +1,10 @@
 package com.monash.eric.mytestingdemo;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -11,6 +13,8 @@ import com.firebase.client.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SportsActivity extends AppCompatActivity {
+
+    public static final String TAG = "SportsActivity";
 
     private CheckBox checkBox1,checkBox2,checkBox3,checkBox4,checkBox5,checkBox6,checkBox7,checkBox8,checkBox9,
     checkBox10;
@@ -23,6 +27,8 @@ public class SportsActivity extends AppCompatActivity {
     private String uid;
 
     private String result="";
+
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +48,17 @@ public class SportsActivity extends AppCompatActivity {
 
         addListenerOnButton();
 
+        //store init a sharedpreference object
+        SharedPreferences sharedPreferences = getSharedPreferences("userProfile",MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+
+
     }
 
     public void addListenerOnButton(){
+
+
 
         checkBox1 = (CheckBox) findViewById(R.id.checkbox1);
         checkBox2 = (CheckBox) findViewById(R.id.checkbox2);
@@ -123,6 +137,11 @@ public class SportsActivity extends AppCompatActivity {
                 }
 
                 childRef.setValue(result.substring(1));
+
+                editor.putString("interest",result.substring(1));
+                editor.commit();
+                SharedPreferences sharedPreferences = getSharedPreferences("userProfile",MODE_PRIVATE);
+                Log.d(TAG,sharedPreferences.getString("interest","N/A"));
 
                 startActivity(new Intent(SportsActivity.this,MainActivity.class));
 

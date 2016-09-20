@@ -2,6 +2,7 @@ package com.monash.eric.mytestingdemo;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -39,7 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
     private String username;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
@@ -102,9 +103,14 @@ public class RegisterActivity extends AppCompatActivity {
                 //Toast.makeText(RegisterActivity.this,uid,Toast.LENGTH_SHORT).show();
 
 
-
                 country = editTextCountry.getText().toString().trim();
                 username = editTextUsername.getText().toString().trim();
+
+                //store init a sharedpreference object
+                SharedPreferences sharedPreferences = getSharedPreferences("userProfile",MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                //editor.putString("interest",)
+
 
 
                 if(TextUtils.isEmpty(username)){
@@ -157,6 +163,10 @@ public class RegisterActivity extends AppCompatActivity {
 
                 Firebase grandChildRef4 = childRef.child("Country");
                 grandChildRef4.setValue(country);
+
+//                Firebase grandChildRef5 = childRef.child("friends");
+//                Firebase grandChildRef5_sub =  grandChildRef5.child("xyzpk");
+//                grandChildRef5_sub.setValue("empty");
 
                 startActivity(new Intent(RegisterActivity.this,SportsActivity.class));
 
