@@ -1,5 +1,6 @@
 package com.monash.eric.mytestingdemo;
 
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -16,12 +17,19 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,LocationListener,FragmentTab_facility.OnHeadlineSelectedListener {
@@ -56,6 +64,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private static int DISPLACEMENT = 10; // 10 meters
 
 
+    private FirebaseAuth firebaseAuth;
+    private Firebase mRootRef;
+
+    SharedPreferences.Editor editor;
+
+    private String currUid;
+
 
     //Define a FragmentTabHost Object
     private FragmentTabHost mTabHost;
@@ -72,14 +87,36 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     //Define a array of words for tabs
     private String textArray[] = {"Facilities","Events","Pals","Me"};
 
+    //VauleListener
+    ValueEventListener sportValueListener,updatesportListner;
+
+    //check sport field
+    boolean sportIsEmptybool = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // set up view
         setContentView(R.layout.activity_main);
+        Firebase.setAndroidContext(this);
 
-        Log.d(TAG,"MainActivity on create ");
+        firebaseAuth = FirebaseAuth.getInstance();
+
+
+        if(firebaseAuth.getCurrentUser() != null) {
+            currUid = firebaseAuth.getCurrentUser().getUid();
+            if (currUid != null || !currUid.equals("")) {
+
+                sportIsEmpty(currUid);
+                //if()child("Sports");
+               // updateUserInterest(currUid);
+            }
+        }
+
+        //Log.d(TAG,"MainActivity on create ");
+
+
 
         initView();
 
@@ -91,6 +128,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
             createLocationRequest();
         }
+
+
+
+
 
 
     }
@@ -130,7 +171,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onStart() {
         super.onStart();
-        Log.d(TAG,"MainActivity on start ");
+        //
+        //    Log.d(TAG,"MainActivity on start ");
 
         if (mGoogleApiClient != null) {
             mGoogleApiClient.connect();
@@ -141,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onResume() {
         super.onResume();
         checkPlayServices();
-        Log.d(TAG,"MainActivity on resume ");
+        //  Log.d(TAG,"MainActivity on resume ");
 
         if (mGoogleApiClient.isConnected()) {
             startLocationUpdates();
@@ -159,8 +201,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG,"MainActivity on pause ");
+        if(firebaseAuth.getCurrentUser() != null) {
+            currUid = firebaseAuth.getCurrentUser().getUid();
+            if (currUid != null || !currUid.equals("")) {
 
+                sportIsEmpty(currUid);
+                //if()child("Sports");
+                // updateUserInterest(currUid);
+            }
+        }
+        //   Log.d(TAG,"MainActivity on pause ");
         //stopLocationUpdates();
     }
 
@@ -270,13 +320,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (mLastLocation != null) {
             curr_longtitude = mLastLocation.getLatitude();
             curr_latitude = mLastLocation.getLongitude();
-            Log.d(TAG,"displayed log and lat");
+            //  Log.d(TAG,"displayed log and lat");
 
-            Log.d(TAG,curr_longtitude + ", " + curr_latitude);
+            //    Log.d(TAG,curr_longtitude + ", " + curr_latitude);
 
         } else {
 
-            Log.d(TAG,"(Couldn't get the location. Make sure location is enabled on the device)");
+            //       Log.d(TAG,"(Couldn't get the location. Make sure location is enabled on the device)");
         }
     }
 
@@ -286,7 +336,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      * */
     protected void startLocationUpdates() {
 
-        Log.d(TAG,"Starting updates");
+        //   Log.d(TAG,"Starting updates");
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
 
@@ -322,6 +372,96 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 //        args.putString("hello", "mao world");
 //        fragobj.setArguments(args);
 //    }
+
+    private void updateUserInterest(String uid)
+    {
+
+        SharedPreferences sharedPreferences = getSharedPreferences("userProfile",MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        mRootRef = new Firebase("https://visra-1d74b.firebaseio.com/Users");
+
+        Firebase usernode = mRootRef.child(uid);
+        final Firebase sportnode = usernode.child("Sports");
+
+//        Log.d(TAG,"updatedinter" + "**");
+//
+//        Log.d(TAG,sportnode.getKey().toString() + "**");
+
+
+        updatesportListner = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                editor.putString("interest",dataSnapshot.getValue().toString());
+                editor.commit();
+                if(updatesportListner != null )
+                {
+                    sportnode.removeEventListener(sportValueListener);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        };
+
+        sportnode.addValueEventListener(updatesportListner);
+
+        if(updatesportListner != null )
+        {
+            sportnode.removeEventListener(sportValueListener);
+        }
+
+    }
+
+    private void sportIsEmpty(final String uid)
+    {
+
+        final Firebase mroot = new Firebase("https://visra-1d74b.firebaseio.com/Users");
+        Firebase usernode = mroot.child(uid);
+
+        sportValueListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+
+                for(DataSnapshot child: dataSnapshot.getChildren())
+                {
+                    HashMap<String, String> userMap = (HashMap<String, String>) child.getValue();
+                    Log.d("tttt",userMap.toString());
+                    if(userMap.containsKey("Sports"))
+                    {
+                        Log.d("tttt","contians");
+                        // sportIsEmptybool = false;
+                        if(sportValueListener != null)
+                        {
+                            mroot.removeEventListener(sportValueListener);
+                        }
+
+                        updateUserInterest(uid);
+                    }
+                }
+                // usernode.addValueEventListener(sportValueListener);
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        };
+
+        if(sportValueListener != null)
+        {
+            mroot.removeEventListener(sportValueListener);
+        }
+
+    }
+
 }
 
 

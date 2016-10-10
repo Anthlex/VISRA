@@ -17,27 +17,10 @@
             android:text="Pal"
             />
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left|center_vertical"
-            android:paddingLeft="20dip"
-            android:text="FriendRequest"
-            android:id="@+id/button_FriendRequests" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="left|center_vertical"
-            android:paddingLeft="20dip"
-            android:text="View Friends"
-            android:id="@+id/button_viewFriends" />
-
         <ListView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/listView">
-
         </ListView>
 
 

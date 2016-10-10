@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ public class FragmentTab_event extends Fragment {
     private Button showAllBtn;
     private Firebase mRootRef;
     private TextView tv_result;
+    private ArrayList<String> eventIdList;
 
 
     private ListView list_events;
@@ -47,6 +49,12 @@ public class FragmentTab_event extends Fragment {
     private String uid;
 
     private ProgressDialog progressDialog;
+
+    private long eventCount;
+
+    ValueEventListener valueEventListener;
+
+
 
 
 
@@ -64,6 +72,7 @@ public class FragmentTab_event extends Fragment {
 
         eventTitle = new ArrayList<>();
         eventList = new ArrayList<>();
+        eventIdList = new ArrayList<>();
         adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_expandable_list_item_1,eventTitle);
         list_events = (ListView)view.findViewById(R.id.listView);
 
@@ -72,7 +81,7 @@ public class FragmentTab_event extends Fragment {
 
         mRootRef = new Firebase("https://visra-1d74b.firebaseio.com/Event");
 
-        mRootRef.addValueEventListener(new ValueEventListener() {
+        valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -81,6 +90,7 @@ public class FragmentTab_event extends Fragment {
 
                     HashMap<String, String> userMap = (HashMap<String, String>) child.getValue();
 
+                    String eventid = child.getKey();
                     String description = userMap.get("Desc");
                     String date = userMap.get("Date");
                     String time = userMap.get("Time");
@@ -92,11 +102,23 @@ public class FragmentTab_event extends Fragment {
                     String longtitue = userMap.get("Longtitue");
 
 
-                    Event event = new Event(description,date,time,venue,sport,title,hostId,latitute,longtitue);
-                    eventList.add(event);
-                    eventTitle.add(title);
 
 
+                    if (userMap.containsKey("Status")) {
+
+                        if (userMap.get("Status").equals("1")) {
+
+                            Event event = new Event(description, date, time, venue, sport, title, hostId, latitute, longtitue);
+                            eventList.add(event);
+                            eventTitle.add(title);
+                            eventIdList.add(eventid);
+                        }
+                    }
+
+                }
+
+                if(valueEventListener != null) {
+                    mRootRef.removeEventListener(valueEventListener);
                 }
 
                 progressDialog.dismiss();
@@ -109,7 +131,9 @@ public class FragmentTab_event extends Fragment {
             public void onCancelled(FirebaseError firebaseError) {
 
             }
-        });
+        };
+
+        mRootRef.addValueEventListener(valueEventListener);
 
 
         list_events.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -118,7 +142,9 @@ public class FragmentTab_event extends Fragment {
                                     long id) {
                 Intent intent = new Intent(getActivity(), EventDetailActivity.class);
                 Event selectedEvent = eventList.get(position);
+                String selectID = eventIdList.get(position);
                 intent.putExtra("eventObj",selectedEvent);
+                intent.putExtra("selectID",selectID);
                 startActivity(intent);
             }
         });
@@ -126,5 +152,26 @@ public class FragmentTab_event extends Fragment {
 
 
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(valueEventListener !=null) {
+            mRootRef.removeEventListener(valueEventListener);
+        }
+
+        Log.d("listsize(events)",eventTitle.size()+"");
+        //  clearList();
+
+    }
+
+
+    public void clearList()
+    {
+        eventTitle.clear();
+        eventIdList.clear();
+        eventList.clear();
+
     }
 }

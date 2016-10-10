@@ -19,75 +19,123 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <CheckBox android:id="@+id/checkbox1"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Basketball"
-            ></CheckBox>
+            android:orientation="horizontal">
 
-        <CheckBox android:id="@+id/checkbox2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:text="Soccer"
-            ></CheckBox>
+            <CheckBox android:id="@+id/checkbox1"
+                android:layout_width="165dp"
+                android:layout_height="40dp"
+                android:layout_margin="8dp"
+                android:text="Basketball"
+                android:drawableLeft="@drawable/basketball"
+                ></CheckBox>
+
+            <CheckBox android:id="@+id/checkbox2"
+                android:layout_width="165dp"
+                android:layout_height="40dp"
+                android:layout_margin="8dp"
+                android:text="Soccer"
+                android:drawableLeft="@drawable/soccer"
+                ></CheckBox>
+
+        </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <CheckBox android:id="@+id/checkbox3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="165dp"
+            android:layout_height="40dp"
             android:layout_margin="8dp"
             android:text="Swimming"
+            android:drawableLeft="@drawable/waterpolo"
             ></CheckBox>
 
         <CheckBox android:id="@+id/checkbox4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="165dp"
+            android:layout_height="40dp"
             android:layout_margin="8dp"
             android:text="Tennis"
+            android:drawableLeft="@drawable/tennis"
             ></CheckBox>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <CheckBox android:id="@+id/checkbox5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="165dp"
+            android:layout_height="40dp"
             android:layout_margin="8dp"
             android:text="Badminton"
+            android:drawableLeft="@drawable/badminton"
             ></CheckBox>
+
 
         <CheckBox android:id="@+id/checkbox6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="165dp"
+            android:layout_height="40dp"
             android:layout_margin="8dp"
             android:text="Cricket"
+            android:drawableLeft="@drawable/americanfootball"
             ></CheckBox>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
         <CheckBox android:id="@+id/checkbox7"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="165dp"
+            android:layout_height="40dp"
             android:layout_margin="8dp"
             android:text="Cycling"
+            android:drawableLeft="@drawable/bicycle"
             ></CheckBox>
 
         <CheckBox android:id="@+id/checkbox8"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="165dp"
+            android:layout_height="40dp"
             android:layout_margin="8dp"
             android:text="Hockey"
+            android:drawableLeft="@drawable/hockey"
             ></CheckBox>
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
         <CheckBox android:id="@+id/checkbox9"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="165dp"
+            android:layout_height="40dp"
             android:layout_margin="8dp"
             android:text="Table Tennis"
+            android:drawableLeft="@drawable/pingpong"
             ></CheckBox>
 
         <CheckBox android:id="@+id/checkbox10"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="165dp"
+            android:layout_height="40dp"
             android:layout_margin="8dp"
             android:text="Snooker"
+            android:drawableLeft="@drawable/eightball"
             ></CheckBox>
+
+    </LinearLayout>
+    </LinearLayout>
 
         <Button
             android:layout_width="match_parent"
@@ -96,16 +144,9 @@
             android:text="Save"
             android:id="@+id/buttonSave"
             android:background="#4ECDC4"
+            android:layout_alignParentBottom="true"
+
             />
-
-
-
-
-
-    </LinearLayout>
-
-
-
 
 </RelativeLayout>
 </ScrollView>

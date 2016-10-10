@@ -2,7 +2,6 @@ package com.monash.eric.mytestingdemo;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -14,11 +13,14 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Calendar;
-
+import java.util.Map;
 
 
 public class RegisterActivity extends AppCompatActivity {
@@ -29,6 +31,8 @@ public class RegisterActivity extends AppCompatActivity {
 
     private Button buttonCon;
     private RadioGroup radioGroup;
+    private RadioButton radiobutton1;
+    private RadioButton radiobutton2;
 
     private Firebase mRootRef;
     private FirebaseAuth firebaseAuth;
@@ -40,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
     private String username;
 
     @Override
-    protected void onCreate(final Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
@@ -53,8 +57,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         Firebase.setAndroidContext(this);
 
-        mRootRef = new Firebase("https://visra-1d74b.firebaseio.com/Users");
-
         editTextUsername = (EditText) findViewById(R.id.editTextUsername);
         editTextBirthday = (EditText) findViewById(R.id.editTextBirthday);
         editTextCountry = (EditText) findViewById(R.id.editTextCountry);
@@ -62,6 +64,60 @@ public class RegisterActivity extends AppCompatActivity {
         buttonCon = (Button) findViewById(R.id.buttonContinue);
 
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        radiobutton1 =(RadioButton)findViewById(R.id.Male);
+        radiobutton2 =(RadioButton)findViewById(R.id.Female);
+
+        mRootRef = new Firebase("https://visra-1d74b.firebaseio.com/Users");
+
+        mRootRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Map<String,String> map = dataSnapshot.getValue(Map.class);
+
+                if(map == null){
+
+                    //Toast.makeText(RegisterActivity.this,"Please set your profile!",Toast.LENGTH_SHORT).show();
+                    //startActivity(new Intent(RegisterActivity.this, RegisterActivity.class));
+                }
+                else {
+
+                    String username = map.get("Username");
+                    String gender = map.get("Gender");
+                    String birthday = map.get("Birthday");
+                    String sports = map.get("Sports");
+                    String country = map.get("Country");
+
+                    editTextUsername.setText(username);
+                    editTextBirthday.setText(birthday);
+                    editTextCountry.setText(country);
+
+                    //Toast.makeText(RegisterActivity.this,gender,Toast.LENGTH_SHORT).show();
+
+                    if (gender == null){
+                        return;
+                    }else{
+                        if(gender.equals("Male")){
+
+                            radiobutton1.setChecked(true);
+                            return;
+                        }
+                        if(gender.equals("Female")){
+                            radiobutton2.setChecked(true);
+                            return;
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -103,14 +159,9 @@ public class RegisterActivity extends AppCompatActivity {
                 //Toast.makeText(RegisterActivity.this,uid,Toast.LENGTH_SHORT).show();
 
 
+                birthday = editTextBirthday.getText().toString().trim();
                 country = editTextCountry.getText().toString().trim();
                 username = editTextUsername.getText().toString().trim();
-
-                //store init a sharedpreference object
-                SharedPreferences sharedPreferences = getSharedPreferences("userProfile",MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                //editor.putString("interest",)
-
 
 
                 if(TextUtils.isEmpty(username)){
@@ -128,7 +179,6 @@ public class RegisterActivity extends AppCompatActivity {
                     //stopping the function execution further
                     return;
                 }
-
 
 
                 if(TextUtils.isEmpty(birthday)){
@@ -164,9 +214,8 @@ public class RegisterActivity extends AppCompatActivity {
                 Firebase grandChildRef4 = childRef.child("Country");
                 grandChildRef4.setValue(country);
 
-//                Firebase grandChildRef5 = childRef.child("friends");
-//                Firebase grandChildRef5_sub =  grandChildRef5.child("xyzpk");
-//                grandChildRef5_sub.setValue("empty");
+                Firebase grandChildRef5 = childRef.child("Uid");
+                grandChildRef5.setValue(uid);
 
                 startActivity(new Intent(RegisterActivity.this,SportsActivity.class));
 

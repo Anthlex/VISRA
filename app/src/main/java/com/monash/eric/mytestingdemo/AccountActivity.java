@@ -17,13 +17,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Map;
-
+/*
+ * AccountActivity is for view user's personal information
+ */
 public class AccountActivity extends AppCompatActivity {
 
+    //firebase
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
     private Firebase mRef;
 
+    // view components
     private TextView textViewUsername;
     private TextView textViewGender;
     private TextView textViewBirthday;
@@ -69,6 +73,7 @@ public class AccountActivity extends AppCompatActivity {
         mRef = new Firebase("https://visra-1d74b.firebaseio.com/Users");
 
 
+        // retriving user's details
         mRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -88,21 +93,36 @@ public class AccountActivity extends AppCompatActivity {
                     String sports = map.get("Sports");
                     String country = map.get("Country");
 
-                    if (birthday == "") {
-                        textViewBirthday.setText("Birthday : ");
+
+                    if (birthday == null) {
+                        textViewBirthday.setText("Birthday : Not Set");
                     } else {
                         textViewBirthday.setText("Birthday : " + birthday);
                     }
 
-                    if (gender == "") {
-                        textViewGender.setText("Gender : ");
+                    if (gender == null) {
+                        textViewGender.setText("Gender : Not Set");
                     } else {
                         textViewGender.setText("Gender : " + gender);
                     }
 
-                    textViewUsername.setText("Name : " + username);
-                    textViewSports.setText("Sport : " + sports);
-                    textViewCountry.setText("Country : " + country);
+                    if (username == null) {
+                        textViewUsername.setText("Name : Not Set");
+                    } else {
+                        textViewUsername.setText("Name : " + username);
+                    }
+
+                    if (sports == null) {
+                        textViewSports.setText("Sport : Not Set");
+                    } else {
+                        textViewSports.setText("Sport : " + sports);
+                    }
+
+                    if (country == null) {
+                        textViewCountry.setText("Country : Not Set");
+                    } else {
+                        textViewCountry.setText("Country : " + country);
+                    }
                 }
 
 
@@ -120,7 +140,7 @@ public class AccountActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                startActivity(new Intent(AccountActivity.this, SportsActivity.class));
+                startActivity(new Intent(AccountActivity.this, RegisterActivity.class));
             }
         });
 
@@ -131,12 +151,11 @@ public class AccountActivity extends AppCompatActivity {
         buttonCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                startActivity(new Intent(AccountActivity.this, MainActivity.class));
-
+                onBackPressed();
             }
         });
     }
+
 
     @Override
     protected void onStart() {

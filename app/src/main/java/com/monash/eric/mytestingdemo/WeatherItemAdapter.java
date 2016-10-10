@@ -14,6 +14,7 @@ import java.util.ArrayList;
  * Created by IBM on 6/09/2016.
  */
 public class WeatherItemAdapter extends BaseAdapter {
+
     private static ArrayList<WeatherForeCast> weatherforcastItems;
 
     private LayoutInflater mInflater;

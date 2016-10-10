@@ -120,7 +120,11 @@
                 android:id="@+id/create_event_btn"
                 android:text="Create Event"/>
 
-
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/call"
+                android:text="Book"/>
 
 
 

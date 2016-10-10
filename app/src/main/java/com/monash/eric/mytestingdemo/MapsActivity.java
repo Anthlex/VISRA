@@ -2,6 +2,7 @@ package com.monash.eric.mytestingdemo;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -11,7 +12,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -19,6 +26,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,8 +43,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String WEATHER_API_BASE ="http://api.openweathermap.org/data/2.5/weather?";
     private static final String WEATHER_API_KEY ="0d9fffea542769114f53e78627a6e769";
 
+    private static final String PLACE_API_BASE="https://maps.googleapis.com/maps/api/place/nearbysearch/json?";
+    private static final String PLACE_API_KEY="&key=AIzaSyCxzmhZsWml6UQUqK_ss8aPvPzBk1u-YrU";
+
+    private String placeId;
+    private GoogleApiClient mGoogleApiClient;
+    private String phoneNumber;
+    private Button buttonCall;
+
+
     // variable for weather JSON response
     public JSONObject jsonObj_weather;
+    public JSONObject jsonObj_detail;
 
     double longtitude;
     double latitude;
@@ -46,8 +64,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     String SportsPlayed;
     String FieldSurfaceType;
     int facility_age;
-    String weather_con;
-    Double temp;
+    String weather_con="";
+    Double temp =-1110.0;
     int changeRoom_num;
 
     ArrayList<String> playedSportsList;
@@ -84,6 +102,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         temperature_tv=(TextView)findViewById(R.id.temperature);
         changroom_tv = (TextView)findViewById(R.id.changeroom);
         createEventBtn=(Button)findViewById(R.id.create_event_btn);
+
         createEventBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,6 +114,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
+
+        mGoogleApiClient = new GoogleApiClient
+                .Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .build();
+
+        mGoogleApiClient.connect();
+
+        buttonCall = (Button) findViewById(R.id.call);
+
+
 
         // get values passed from Search Activity
         Intent intent = getIntent();
@@ -123,6 +154,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         //call weather API
         CallWeatherAPIProcess callWeatherAPIProcess = new CallWeatherAPIProcess();
         callWeatherAPIProcess.execute(new String[]{latitude+"", longtitude+""});
+
+        buttonCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (phoneNumber != null) {
+
+                    Uri number = Uri.parse("tel:" + phoneNumber.substring(1));
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL, number);
+                    startActivity(callIntent);
+                }
+                else {Toast.makeText(MapsActivity.this,"This facility can not be booked currently", Toast.LENGTH_SHORT).show();}
+
+            }
+        });
+
+        //call google place Api
+        CallPlaceAPIProcess callPlaceAPIProcess = new CallPlaceAPIProcess();
+        callPlaceAPIProcess.execute(new String[]{latitude+"", longtitude+"", facility_name+""});
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -153,6 +203,106 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    private class CallPlaceAPIProcess extends AsyncTask<String,Void,Void>
+    {
+
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                callPlaceWS(params[0],params[1],params[2]);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+
+
+
+        }
+    }
+
+    protected String callPlaceWS(String lat, String lon, String facility_name) throws JSONException {
+        URL url = null;
+        HttpURLConnection conn = null;
+        //Weather API JSON response
+        String textResult = "";
+        String name = facility_name.replaceAll(" ", "+");
+        Log.i("GooglePlaceAPI",name);
+
+
+
+
+        try {
+            //convert course entity to string json by calling toJson method
+            url = new URL(PLACE_API_BASE+"location="+lat+","+lon+"&radius=500&name="+name+PLACE_API_KEY );
+            Log.i("GooglePlaceAPI",url.toString());
+            //open the connection
+            conn = (HttpURLConnection) url.openConnection();
+            //set the timeout
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(15000);
+            //set the connection method to POST
+            conn.setRequestMethod("GET");
+            //set the output to true
+            conn.setDoOutput(true);
+            //add HTTP headers to set your respond type to json
+            conn.setRequestProperty("Content-Type", "application/json");
+            Scanner inStream = new Scanner(conn.getInputStream());
+            //read the input steream and store it as string
+            while (inStream.hasNextLine()) {
+                textResult += inStream.nextLine();
+                //Log.i("GooglePlaceAPI",textResult);
+
+            }
+
+            jsonObj_detail = new JSONObject(textResult.toString());
+
+            Log.i("GooglePlaceAPI",jsonObj_detail.toString());
+
+            //get the main section from the Json object
+            getPlaceFromJson(jsonObj_detail);
+            return "ok";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.disconnect();
+        }
+
+        return textResult;
+    }
+
+    private void getPlaceFromJson(JSONObject place) throws JSONException {
+
+
+        JSONArray arr = place.getJSONArray("results");
+
+        String placeId = arr.getJSONObject(0).getString("place_id");
+        Log.i("GooglePlaceAPI",placeId);
+
+        Places.GeoDataApi.getPlaceById(mGoogleApiClient, placeId)
+                .setResultCallback(new ResultCallback<PlaceBuffer>() {
+                    @Override
+                    public void onResult(PlaceBuffer places) {
+                        if (places.getStatus().isSuccess() && places.getCount() > 0) {
+                            final Place myPlace = places.get(0);
+                            Log.i("GooglePlaceAPI",myPlace.getPhoneNumber().toString());
+                            phoneNumber = myPlace.getPhoneNumber().toString();
+
+                        } else {
+                            Log.e(TAG, "Place not found");
+                        }
+                        places.release();
+                    }
+                });
+
+
+        //weather_con = place.getJSONArray("weather").getJSONObject(0).getString("description").toString();
+    }
+
 
     //asyn task for calling weather API
     private class CallWeatherAPIProcess extends AsyncTask<String,Void,Void>
@@ -171,11 +321,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         @Override
         protected void onPostExecute(Void aVoid) {
 
+            if (temp != 1110.0 && !weather_con.equals(""))
             temperature_tv.setText(temp.intValue()+" ℃");
             weather_tv.setText(weather_con);
 
         }
     }
+
+
 
 
     protected String callWeatherWS(String lat, String lon) throws JSONException {
@@ -223,12 +376,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void getWeatherFromJson(JSONObject weather) throws JSONException {
 
 
-//        Log.i("weathertest",weather.getJSONArray("weather").getJSONObject(0).getString("description").toString());
-//        Log.i("weathertest","inside transjosn");
 
         JSONObject jsonWeatherMain = weather.getJSONObject("main");
 
-        temp = jsonWeatherMain.getDouble("temp")-273.15;
-        weather_con = weather.getJSONArray("weather").getJSONObject(0).getString("description").toString();
+
+
+        if(jsonWeatherMain.has("temp")) {
+            temp = jsonWeatherMain.getDouble("temp") - 273.15;
+            //Log.d("weatherapi",temp+"");
+        }
+        if(weather.getJSONArray("weather").getJSONObject(0).has("description")) {
+            weather_con = weather.getJSONArray("weather").getJSONObject(0).getString("description").toString();
+            //Log.d("weatherapi",weather_con+"");
+
+        }
     }
 }

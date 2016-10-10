@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:orientation="vertical" >
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
@@ -19,18 +26,55 @@
             android:text="Account"
             />
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Hello"
-            android:id="@+id/hello"
-            android:layout_margin="15dp"/>
+            android:orientation="horizontal"
+            >
+
+            <TextView
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:hint="Hello"
+                android:id="@+id/hello"
+                android:layout_margin="15dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+
+                <ImageButton
+                android:layout_width="80dp"
+                android:layout_height="120dp"
+                android:id="@+id/imageView"
+                />
+
+                <View
+                    android:layout_width="80dp"
+                    android:layout_height="3dp" />
+
+                <Button
+                    android:layout_width="80dp"
+                    android:layout_height="25dp"
+                    android:id="@+id/upload"
+                    android:textSize="12dp"
+                    android:text="camera"
+                    android:background="#4ECDC4"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
 
         <Button
-            android:layout_margin="10dp"
+            android:layout_margin="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Profile"
+            android:text="My Profile"
             android:id="@+id/buttonProfile"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
@@ -38,7 +82,29 @@
             />
 
         <Button
-            android:layout_margin="10dp"
+            android:layout_margin="6dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="My Friends"
+            android:id="@+id/button_viewFriends"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:background="#4ECDC4"
+            />
+
+        <Button
+            android:layout_margin="6dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="My Event"
+            android:id="@+id/button_viewEvent"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:background="#4ECDC4"
+            />
+
+        <Button
+            android:layout_margin="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Logout"
@@ -54,3 +120,5 @@
 
 
 </RelativeLayout>
+
+</ScrollView>

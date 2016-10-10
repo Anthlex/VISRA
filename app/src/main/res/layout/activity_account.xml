@@ -45,21 +45,10 @@
             android:layout_margin="15dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/textViewBirthday"
-            android:text="Birthday"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#E8E8E8"
-            />
-
-        <TextView
-            android:layout_margin="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/textViewCountry"
             android:text="Country"/>
+
+
 
         <View
             android:layout_width="match_parent"
@@ -74,11 +63,29 @@
             android:id="@+id/textViewSports"
             android:text="Sports"/>
 
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="#E8E8E8"
             />
+
+
+        <TextView
+            android:layout_margin="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textViewBirthday"
+            android:text="Birthday"/>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E8E8E8"
+            />
+
+
 
         <Button
             android:layout_margin="8dp"

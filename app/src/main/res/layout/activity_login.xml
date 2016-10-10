@@ -34,28 +34,55 @@
             android:inputType="textEmailAddress"/>
 
         <EditText
-            android:layout_margin="15dp"
+            android:layout_margin="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Password"
             android:id="@+id/editTextPassword"
             android:inputType="textWebPassword"/>
+        
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            
+        
 
         <Button
-            android:layout_margin="15dp"
-            android:layout_width="match_parent"
+            android:layout_margin="10dp"
+            android:layout_width="155dp"
             android:layout_height="wrap_content"
             android:text="Login"
             android:id="@+id/buttonLogin"
             android:background="#4ECDC4"/>
 
         <Button
-            android:layout_margin="15dp"
-            android:layout_width="match_parent"
+            android:layout_margin="10dp"
+            android:layout_width="155dp"
             android:layout_height="wrap_content"
             android:text="Register"
             android:id="@+id/buttonRegister"
             android:background="#4ECDC4"/>
+
+        </LinearLayout>
+
+        <com.google.android.gms.common.SignInButton
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonGoogle">
+        </com.google.android.gms.common.SignInButton>
+        
+        <TextView
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Forget password ?"
+            android:gravity="center"
+            android:textColor="@color/color_sandybrown"
+            android:id="@+id/resetPassword"/>
+
+
 
 
 

@@ -34,75 +34,76 @@
             android:layout_height="wrap_content"
             android:id="@+id/friendReqDetails_tvGender"
             android:text="Gender"/>
+        <!--
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E8E8E8"
+                    />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#E8E8E8"
-            />
+                <TextView
+                    android:layout_margin="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/friendReqDetails_tvBirthday"
+                    android:text="Birthday"/>
+                     -->
 
-        <TextView
-            android:layout_margin="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/friendReqDetails_tvBirthday"
-            android:text="Birthday"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E8E8E8"
+                    />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#E8E8E8"
-            />
+                <TextView
+                    android:layout_margin="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/friendReqDetails_tvCountry"
+                    android:text="Country"/>
 
-        <TextView
-            android:layout_margin="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/friendReqDetails_tvCountry"
-            android:text="Country"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E8E8E8"
+                    />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#E8E8E8"
-            />
+                <TextView
+                    android:layout_margin="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/friendReqDetails_tVSports"
+                    android:text="Sports"/>
 
-        <TextView
-            android:layout_margin="15dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/friendReqDetails_tVSports"
-            android:text="Sports"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#E8E8E8"
+                    />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#E8E8E8"
-            />
+                <Button
+                    android:layout_margin="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Back"
+                    android:id="@+id/ok_btn_user_detail_activity"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:background="#4ECDC4"
+                    />
 
-        <Button
-            android:layout_margin="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Back"
-            android:id="@+id/ok_btn_user_detail_activity"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:background="#4ECDC4"
-            />
+                <Button
+                    android:layout_margin="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Add As Friend"
+                    android:id="@+id/addfriend_btn_user_detail_act"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:background="#4ECDC4"
+                    />
 
-        <Button
-            android:layout_margin="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Add As Friend"
-            android:id="@+id/addfriend_btn_user_detail_act"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:background="#4ECDC4"
-            />
-
-    </LinearLayout>
+            </LinearLayout>
 
 
-</RelativeLayout>
+        </RelativeLayout>

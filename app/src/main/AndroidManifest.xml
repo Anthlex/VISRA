@@ -26,11 +26,11 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -46,7 +46,7 @@
              Note that the API key is linked to the encryption key used to sign the APK.
              You need a different API key for each encryption key, including the release key that is used to
              sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -60,34 +60,36 @@
                 android:value="com.monash.eric.mytestingdemo.SearchActivity" />
         </activity>
         <activity android:name=".RegisterActivity" />
+        <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity" />
         <activity android:name=".AccountActivity" />
         <activity android:name=".SportsActivity" />
         <activity android:name=".CreateEventActivity" />
+        <activity android:name=".FriendReqDetailsActivity" />
+        <activity android:name=".MyFreindListActivity" />
+        <activity android:name=".FriendRequestActivity" />
         <activity
             android:name=".EventDetailActivity"
             android:label="@string/title_activity_event_detail" />
         <activity android:name=".UserDetailActivity" />
         <activity android:name=".WeatherForecastActivity" />
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
-        <!-- [START firebase_service] -->
-        <service android:name=".Services.MyFirebaseMessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
-        <!-- [END firebase_service] -->
-        <!-- [START firebase_iid_service] -->
-        <service android:name=".Services.MyFirebaseInstanceIDService">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
-        <!-- [END firebase_iid_service] -->
-
-        <activity android:name=".FriendRequestActivity" />
-        <activity android:name=".FriendReqDetailsActivity" />
-        <activity android:name=".MyFreindListActivity"></activity>
+        <activity android:name=".ResetActivity" />
+        <activity android:name=".MyEventActivity" />
+        <activity
+            android:name=".MyEventDetailActivity"
+            android:label="@string/title_activity_my_event_detail" />
+        <activity android:name=".InviteActivity" />
+        <activity android:name=".EventInviteActivity" />
+        <activity
+            android:name=".InviteDetailActivity"
+            android:label="@string/title_activity_invite_detail"></activity>
     </application>
-
 </manifest>

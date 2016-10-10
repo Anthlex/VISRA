@@ -18,8 +18,19 @@
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="381dp"
         android:id="@+id/lv_myFriends"/>
+
+    <Button
+        android:layout_margin="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Friend Request"
+        android:id="@+id/button_FriendRequests"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:background="#4ECDC4"
+        />
 
 
 </LinearLayout>

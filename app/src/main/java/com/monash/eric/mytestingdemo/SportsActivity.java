@@ -17,7 +17,7 @@ public class SportsActivity extends AppCompatActivity {
     public static final String TAG = "SportsActivity";
 
     private CheckBox checkBox1,checkBox2,checkBox3,checkBox4,checkBox5,checkBox6,checkBox7,checkBox8,checkBox9,
-    checkBox10;
+            checkBox10;
 
     private Button buttonSave;
 
@@ -70,6 +70,10 @@ public class SportsActivity extends AppCompatActivity {
         checkBox8 = (CheckBox) findViewById(R.id.checkbox8);
         checkBox9 = (CheckBox) findViewById(R.id.checkbox9);
         checkBox10 = (CheckBox) findViewById(R.id.checkbox10);
+        if(checkBox10.isChecked()){
+            checkBox10.setButtonDrawable(R.drawable.bicycle);
+            return;
+        }
 
 
 

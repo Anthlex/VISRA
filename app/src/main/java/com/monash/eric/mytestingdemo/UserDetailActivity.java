@@ -1,18 +1,23 @@
 package com.monash.eric.mytestingdemo;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.monash.eric.mytestingdemo.Entity.Friends;
 import com.monash.eric.mytestingdemo.Entity.Users;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +27,7 @@ public class UserDetailActivity extends AppCompatActivity {
 
     private TextView textViewUsername;
     private TextView textViewGender;
-    private TextView textViewBirthday;
+    //private TextView textViewBirthday;
     private TextView textViewCountry;
     private TextView textViewSports;
 
@@ -31,12 +36,12 @@ public class UserDetailActivity extends AppCompatActivity {
     //firebase object
     private Firebase mRootRef;
 
+    private ArrayList<String> friend_ids;
+
 
     private String curr_uid;
 
     private String addfriend_id;
-
-
 
     private Button buttonOk;
     private Button addFriend_btn;
@@ -50,10 +55,12 @@ public class UserDetailActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
 
+        friend_ids = new ArrayList<>();
+
 
         textViewUsername = (TextView)findViewById(R.id.friendReqDetails_tvUsername);
         textViewGender = (TextView)findViewById(R.id.friendReqDetails_tvGender);
-        textViewBirthday = (TextView)findViewById(R.id.friendReqDetails_tvBirthday);
+        //textViewBirthday = (TextView)findViewById(R.id.friendReqDetails_tvBirthday);
         textViewCountry = (TextView)findViewById(R.id.friendReqDetails_tvCountry);
         textViewSports = (TextView)findViewById(R.id.friendReqDetails_tVSports);
         buttonOk = (Button)findViewById(R.id.ok_btn_user_detail_activity);
@@ -66,12 +73,9 @@ public class UserDetailActivity extends AppCompatActivity {
 
         addfriend_id = users.getUser_id();
 
-        Log.d(TAG,users.toString());
-        Log.d(TAG,users.getSports());
-
         textViewSports.setText(users.getSports());
         textViewUsername.setText(users.getUsername());
-        textViewBirthday.setText(users.getBirthday());
+        //textViewBirthday.setText(users.getBirthday());
         textViewGender.setText(users.getGender());
         textViewCountry.setText(users.getCountry());
 
@@ -90,8 +94,49 @@ public class UserDetailActivity extends AppCompatActivity {
             }
         });
 
+        checkFriend();
+    }
+
+    private void checkFriend() {
+
+        mRootRef = new Firebase("https://visra-1d74b.firebaseio.com/Users");
+        Firebase currentUser = mRootRef.child(curr_uid);
+        final Firebase currentFriend = currentUser.child("Friends");
+
+        currentFriend.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
 
 
+                    HashMap<String, String> userMap = (HashMap<String, String>) child.getValue();
+
+
+                    if (userMap.get("status").equals("1")) {
+
+                        friend_ids.add(userMap.get("Friend_id"));
+                        //Log.d(TAG,userMap.get("Friend_id") );
+                    }
+
+                    Log.d(TAG,friend_ids.toString() );
+
+                    if(friend_ids.contains(addfriend_id)){
+
+                        addFriend_btn.setText("Already Friend");
+                        addFriend_btn.setEnabled(false);
+                        addFriend_btn.setBackgroundColor(Color.LTGRAY);
+                        addFriend_btn.setTextColor(Color.WHITE);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
 
 
     }
@@ -109,7 +154,7 @@ public class UserDetailActivity extends AppCompatActivity {
         newFriend.put("Friend_id", other_userid);
         newFriend.put("status", "2");
         newFriend.put("action_user", actioner_id);
-        firend_node.push().setValue(newFriend);
+        firend_node.child(other_userid).setValue(newFriend);
 
 
         // adding record in other user node
@@ -121,7 +166,9 @@ public class UserDetailActivity extends AppCompatActivity {
         newFriend.put("Friend_id", actioner_id);
         newFriend.put("status", "2");
         newFriend.put("action_user", actioner_id);
-        firend_node.push().setValue(newFriend);
+        firend_node.child(actioner_id).setValue(newFriend);
+
+        Toast.makeText(UserDetailActivity.this,"Request has sent!",Toast.LENGTH_SHORT).show();
 
         //TODO prevent adding firends who are already firends
 

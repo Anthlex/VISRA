@@ -41,14 +41,14 @@
             android:orientation="horizontal" >
 
             <RadioButton
-                android:id="@+id/radioM"
+                android:id="@+id/Male"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="Male" />
 
             <RadioButton
-                android:id="@+id/radioF"
+                android:id="@+id/Female"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
