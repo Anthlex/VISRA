@@ -27,6 +27,8 @@
         android:layout_height="wrap_content"
         android:text="OK"
         android:layout_alignParentBottom="true"
+        android:textColor="@color/color_white"
+        android:background="@drawable/mycustombutton"
         android:id="@+id/invite_btn"/>
 
 

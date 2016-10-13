@@ -89,9 +89,11 @@ public class FragmentTab_facility extends ListFragment {
     JSONArray jArray = null;
 
 
+    // -37.8776187
+    // 145.0441267
     //variables for coordinates
-    double curr_longtitude_from_main;
-    double curr_latitude_from_main;
+    double curr_longtitude_from_main ;
+    double curr_latitude_from_main ;
 
     ///////tesing inter comm
     OnHeadlineSelectedListener mCallback;
@@ -132,7 +134,6 @@ public class FragmentTab_facility extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "FragmentTab_facility on create ");
 
 
     }
@@ -157,14 +158,18 @@ public class FragmentTab_facility extends ListFragment {
         showNearby.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG,"shownearbyClicked");
                 progressDialog = new ProgressDialog(getActivity());
                 progressDialog.setMessage("Loading...");
                 progressDialog.show();
                 curr_longtitude_from_main = mCallback.getLongtitude();
+
+                Log.d(TAG,curr_longtitude_from_main+"long");
                 curr_latitude_from_main = mCallback.getLatiitude();
 
+                Log.d(TAG,curr_latitude_from_main+"lat");
+
                 CallGeoWS callGeoWS = new CallGeoWS();
+
                 callGeoWS.execute(curr_longtitude_from_main, curr_latitude_from_main);
 
 
@@ -176,11 +181,9 @@ public class FragmentTab_facility extends ListFragment {
             @Override
             public void onClick(View view) {
 
-                Log.d(TAG, "facility page on create view ON CLICK");
                 curr_longtitude_from_main = mCallback.getLongtitude();
                 curr_latitude_from_main = mCallback.getLatiitude();
 
-                Log.d(TAG, curr_longtitude_from_main + " abc " + curr_latitude_from_main);
 
 
                 SearchFacility();
@@ -189,7 +192,6 @@ public class FragmentTab_facility extends ListFragment {
         });
 
 
-        Log.d(TAG, "facility page on create view");
 
         return view;
     }
@@ -208,7 +210,7 @@ public class FragmentTab_facility extends ListFragment {
 
         if (resultCode == Activity.RESULT_OK) {
             String JsonResult = data.getStringExtra("result");
-            Log.d(TAG,JsonResult);
+            //Log.d(TAG,JsonResult);
             updateList(JsonResult);
         }
 
@@ -320,7 +322,7 @@ public class FragmentTab_facility extends ListFragment {
         curr_longtitude_from_main = mCallback.getLongtitude();
         curr_latitude_from_main = mCallback.getLatiitude();
         //  checkPlayServices();
-//        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
+//        if (mGoogleApiClient.isConnected()) {
 //            startLocationUpdates();
 //        }
     }
@@ -398,7 +400,7 @@ public class FragmentTab_facility extends ListFragment {
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
 
-        Log.d(TAG,result.toString());
+      //  Log.d(TAG,result.toString());
 
         return result.toString();
     }
@@ -413,12 +415,13 @@ public class FragmentTab_facility extends ListFragment {
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(GEO_BASE_URI);
-            sb.append(lng);
-            sb.append(",");
             sb.append(lat);
+            sb.append(",");
+            sb.append(lng);
             sb.append("&key=");
             sb.append(API_KEY);
 
+            Log.d(TAG,sb.toString());
 
             // Gson gson = new Gson();
             //convert course entity to string json by calling toJson method
@@ -427,8 +430,7 @@ public class FragmentTab_facility extends ListFragment {
 //            url = new URL ("https://maps.googleapis.com/maps/api/geocode/json?address=" +
 //                    URLEncoder.encode(address + " Australia ", "utf8")+"&region=au"+"&key="+APIKEY);
 
-            Log.d(TAG, sb.toString());
-
+//
             url = new URL(sb.toString());
 
             conn = (HttpURLConnection) url.openConnection();
@@ -468,7 +470,7 @@ public class FragmentTab_facility extends ListFragment {
         @Override
         protected void onPostExecute(String result) {
             getSuburbFromJson(result);
-            Log.i(TAG, result);
+            Log.d(TAG, result);
             executeSerachSportAPI();
         }
     }
@@ -479,15 +481,18 @@ public class FragmentTab_facility extends ListFragment {
         Gson gson = new Gson();
         GeoResponse geoResponse = gson.fromJson(originalJson, GeoResponse.class);
 
-        GeoResponse.address_component[] element = geoResponse.results[0].address_components;
+        Log.d(TAG,geoResponse.results+"");
+        if(geoResponse.results.length>0) {
+            GeoResponse.address_component[] element = geoResponse.results[0].address_components;
 
 
-        for (int i = 0; i < element.length; i++) {
+            for (int i = 0; i < element.length; i++) {
 
-            if (element[i].types[0].equals("locality")) {
-                suburb = element[i].long_name;
-                Log.d(TAG, suburb);
+                if (element[i].types[0].equals("locality")) {
+                    suburb = element[i].long_name;
+                    //Log.d(TAG, suburb);
 
+                }
             }
         }
 
@@ -529,9 +534,15 @@ public class FragmentTab_facility extends ListFragment {
                 JSONArray jArraySports = new JSONArray(s);
                 for(int i = 0 ; i<jArraySports.length();i++)
                 {
-                    String playedsportsytemp = jArraySports.getJSONObject(i).getString("SportsPlayed");
-                    Log.d(TAG,playedsportsytemp);
-                    playedSportsList.add(playedsportsytemp);
+                    if(i==0) {
+                        String playedsportsytemp = jArraySports.getJSONObject(i).getString("SportsPlayed");
+                       // Log.d(TAG, playedsportsytemp);
+                        playedSportsList.add(playedsportsytemp);
+                    }
+                    else{
+                        String playedsportsytemp = " " +jArraySports.getJSONObject(i).getString("SportsPlayed");
+                        playedSportsList.add(playedsportsytemp);
+                    }
                 }
                 intentforMap.putExtra("sportPlayedList",playedSportsList);
             } catch (JSONException e) {
@@ -589,7 +600,7 @@ public class FragmentTab_facility extends ListFragment {
             e.printStackTrace();
         }
 
-        Log.d(TAG,response);
+     //   Log.d(TAG,response);
         return response;
 
     }

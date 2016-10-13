@@ -201,7 +201,7 @@ public class WeatherForecastActivity extends AppCompatActivity {
     public String convertUTCTodate(long UTCtime)
     {
         java.util.Date time=new java.util.Date((long)UTCtime*1000);
-        String formattedDate = new SimpleDateFormat("yyyy-MM-EEE").format(time);
+        String formattedDate = new SimpleDateFormat("yyyy-MM-dd EEEE").format(time);
 
         return formattedDate;
 

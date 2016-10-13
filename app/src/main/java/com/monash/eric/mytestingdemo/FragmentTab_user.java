@@ -99,7 +99,8 @@ public class FragmentTab_user extends Fragment {
                         public void onSuccess(Uri uri) {
 
 
-                            Picasso.with(getContext()).load(uri).fit().centerCrop().into(imageView);
+                            Picasso.with(getContext()).load(uri).fit().rotate(90f).centerCrop().into(imageView);
+                            //Picasso.with(getContext()).load(uri).rotate(90f).centerCrop().resize(360,240).into(imageView);
 
 
                         }
@@ -299,7 +300,8 @@ public class FragmentTab_user extends Fragment {
 
                     String url = downloadUri.toString();
 
-                    Picasso.with(getContext()).load(downloadUri).fit().centerCrop().into(imageView);
+                    Picasso.with(getContext()).load(downloadUri).fit().centerCrop().rotate(90f).into(imageView);
+                   // Picasso.with(getContext()).load(downloadUri).rotate(90f).centerCrop().resize(360,240).into(imageView);
 
                     Firebase childRef = mRef.child(uid);
 
@@ -344,7 +346,8 @@ public class FragmentTab_user extends Fragment {
 
                     String url = downloadUri.toString();
 
-                    Picasso.with(getContext()).load(downloadUri).fit().centerCrop().into(imageView);
+                    Picasso.with(getContext()).load(downloadUri).fit().centerCrop().rotate(90f).into(imageView);
+                   // Picasso.with(getContext()).load(downloadUri).resize(360,240).centerCrop().rotate(90f).into(imageView);
 
                     Firebase childRef = mRef.child(uid);
 

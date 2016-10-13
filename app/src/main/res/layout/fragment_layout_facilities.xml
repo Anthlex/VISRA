@@ -35,10 +35,12 @@
         android:layout_margin="8dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="New Search"
+        android:text="Search Venue"
+        android:textSize="14sp"
         android:id="@+id/button2_fragmentfac"
-        android:shadowColor="@color/buttonColor"
-        android:background="#4ECDC4"
+        android:textColor="@color/color_white"
+        android:background="@drawable/mycustombutton"
+
 
         />
 
@@ -47,10 +49,11 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search for nearby facility"
+        android:text="Suggest nearby Venue"
         android:id="@+id/button2_showNearby"
-        android:shadowColor="@color/authui_colorPrimaryDark"
-        android:background="#4ECDC4"
+        android:textSize="14sp"
+        android:textColor="@color/color_white"
+        android:background="@drawable/mycustombutton"
         />
 
     <ListView

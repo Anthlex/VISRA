@@ -109,13 +109,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             if (currUid != null || !currUid.equals("")) {
 
                 sportIsEmpty(currUid);
-                //if()child("Sports");
-               // updateUserInterest(currUid);
+
             }
         }
-
-        //Log.d(TAG,"MainActivity on create ");
-
 
 
         initView();
@@ -151,6 +147,19 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             mTabHost.addTab(tabSpec, fragmentArray[i], null);
 
         }
+
+//        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
+//            @Override
+//            public void onTabChanged(String s) {
+//                for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
+//                    tab.getTabWidget().getChildAt(i)
+//                            .setBackgroundResource(R.drawable.tab_selected); // unselected
+//                }
+//                tab.getTabWidget().getChildAt(tab.getCurrentTab())
+//                        .setBackgroundResource(R.drawable.tab_unselected); // selected
+//
+//            }
+//        });
     }
 
 
@@ -172,9 +181,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onStart() {
         super.onStart();
         //
-        //    Log.d(TAG,"MainActivity on start ");
+            Log.d(TAG,"MainActivity on start ");
 
         if (mGoogleApiClient != null) {
+//            Log.d(TAG,mGoogleApiClient.toString());
             mGoogleApiClient.connect();
         }
     }
@@ -183,14 +193,18 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onResume() {
         super.onResume();
         checkPlayServices();
-        //  Log.d(TAG,"MainActivity on resume ");
-
-        if (mGoogleApiClient.isConnected()) {
-            startLocationUpdates();
-        }
+          Log.d(TAG,"MainActivity on resume ");
+//            Log.d(TAG,mGoogleApiClient.toString());
+            if(mGoogleApiClient != null) {
+                if (mGoogleApiClient.isConnected()) {
+                    startLocationUpdates();
+                }
+            }
     }
 
     public void onStop() {
+        Log.d(TAG,"MainActivity on stop ");
+
         super.onStop();
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
@@ -201,6 +215,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d(TAG,"MainActivity on pause ");
+
         if(firebaseAuth.getCurrentUser() != null) {
             currUid = firebaseAuth.getCurrentUser().getUid();
             if (currUid != null || !currUid.equals("")) {
@@ -216,8 +232,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        displayLocation();
         startLocationUpdates();
+        displayLocation();
+
 
     }
 
@@ -231,17 +248,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         // Assign the new location
         mLastLocation = location;
 
-        //Toast.makeText(this, "Location changed!",Toast.LENGTH_SHORT).show();
-
-        // Displaying the new location on UI
-//        displayLocation();
-//
-//        Bundle bundle = new Bundle();
-//        bundle.putDouble("lng", curr_longtitude);
-//        bundle.putDouble("lat", curr_latitude);
-
-        // set Fragmentclass Arguments
-
+        curr_longtitude = location.getLongitude();
+        curr_latitude = location.getLatitude();
+        Log.d(TAG,"locaction changed" + mLastLocation.toString());
 
     }
 
@@ -318,11 +327,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .getLastLocation(mGoogleApiClient);
 
         if (mLastLocation != null) {
-            curr_longtitude = mLastLocation.getLatitude();
-            curr_latitude = mLastLocation.getLongitude();
-            //  Log.d(TAG,"displayed log and lat");
-
-            //    Log.d(TAG,curr_longtitude + ", " + curr_latitude);
+            curr_longtitude = mLastLocation.getLongitude();
+            curr_latitude = mLastLocation.getLatitude();
+//              Log.d(TAG,"displayed log and lat");
+//
+//              Log.d(TAG,curr_longtitude + ", " + curr_latitude);
 
         } else {
 
@@ -336,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      * */
     protected void startLocationUpdates() {
 
-        //   Log.d(TAG,"Starting updates");
+           Log.d(TAG,"Starting updates");
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
 
@@ -352,11 +361,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public double getLongtitude() {
+        Log.d(TAG,"longget" + curr_longtitude) ;
         return curr_longtitude;
     }
 
     @Override
     public double getLatiitude() {
+        Log.d(TAG,"latt" + curr_latitude) ;
+
         return curr_latitude;
     }
 

@@ -93,10 +93,10 @@
             android:layout_height="wrap_content"
             android:text="Edit"
             android:id="@+id/buttonEdit"
-            android:shadowColor="#7f8c8d"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:background="#4ECDC4"
+            android:textColor="@color/color_white"
+            android:background="@drawable/mycustombutton"
             />
 
         <Button
@@ -107,7 +107,8 @@
             android:id="@+id/buttonCancel"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:background="#4ECDC4"
+            android:textColor="@color/color_white"
+            android:background="@drawable/mycustombutton"
             />
 
     </LinearLayout>

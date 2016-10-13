@@ -51,6 +51,8 @@ public class CreateEventActivity extends AppCompatActivity implements AdapterVie
     private String desc;
     private String time;
 
+    private ArrayList<String> sportList;
+
     //coordinates
     private double longtitude;
     private double latitude;
@@ -116,6 +118,7 @@ public class CreateEventActivity extends AppCompatActivity implements AdapterVie
         venue = intent.getStringExtra("facility_name");
         longtitude = intent.getDoubleExtra("lng", 0);
         latitude = intent.getDoubleExtra("lat", 0);
+        sportList = intent.getStringArrayListExtra("sportList");
         editTextVenue.setText(venue);
 
 
@@ -168,20 +171,27 @@ public class CreateEventActivity extends AppCompatActivity implements AdapterVie
         spinner.setOnItemSelectedListener(this);
 
         // Spinner Drop down elements
+
         List<String> categories = new ArrayList<String>();
-        categories.add("Soccer");
-        categories.add("Basketball");
-        categories.add("Table Tennis");
-        categories.add("Swimming");
-        categories.add("Badminton");
-        categories.add("Volleyball");
-        categories.add("Cricket");
-        categories.add("Snooker");
-        categories.add("Cycling");
-        categories.add("Hockey");
-        categories.add("Tennis");
-        categories.add("Rugby Union");
-        categories.add("Rugby Legue");
+
+        if(sportList == null ) {
+            categories.add("Soccer");
+            categories.add("Basketball");
+            categories.add("Table Tennis");
+            categories.add("Swimming");
+            categories.add("Badminton");
+            categories.add("Volleyball");
+            categories.add("Cricket");
+            categories.add("Snooker");
+            categories.add("Cycling");
+            categories.add("Hockey");
+            categories.add("Tennis");
+            categories.add("Rugby Union");
+            categories.add("Rugby Legue");
+        }
+        else {
+            categories = sportList;
+        }
 
 
         // Creating adapter for spinner

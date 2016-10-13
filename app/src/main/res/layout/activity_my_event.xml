@@ -17,6 +17,8 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:id="@+id/tv_my_events"
             android:text="My Events"/>
 
         <ListView
@@ -34,7 +36,8 @@
             android:id="@+id/button_viewInvitation"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:background="#4ECDC4"
+            android:background="@drawable/mycustombuttonopa"
+            android:textColor="#2980B9"
             />
 
 

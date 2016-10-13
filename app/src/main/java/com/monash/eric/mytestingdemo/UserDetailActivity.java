@@ -73,11 +73,11 @@ public class UserDetailActivity extends AppCompatActivity {
 
         addfriend_id = users.getUser_id();
 
-        textViewSports.setText(users.getSports());
-        textViewUsername.setText(users.getUsername());
+        textViewSports.setText("Interests :" + users.getSports());
+        textViewUsername.setText("Name :" +users.getUsername());
         //textViewBirthday.setText(users.getBirthday());
-        textViewGender.setText(users.getGender());
-        textViewCountry.setText(users.getCountry());
+        textViewGender.setText("Gender :" +users.getGender());
+        textViewCountry.setText("Country :" +users.getCountry());
 
         addFriend_btn.setOnClickListener(new View.OnClickListener() {
             @Override

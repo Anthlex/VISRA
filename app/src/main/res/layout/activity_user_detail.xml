@@ -89,8 +89,8 @@
                     android:id="@+id/ok_btn_user_detail_activity"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
-                    android:background="#4ECDC4"
-                    />
+                    android:textColor="@color/color_white"
+                    android:background="#2980B9"                    />
 
                 <Button
                     android:layout_margin="8dp"
@@ -100,7 +100,8 @@
                     android:id="@+id/addfriend_btn_user_detail_act"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentEnd="true"
-                    android:background="#4ECDC4"
+                    android:textColor="@color/color_white"
+                    android:background="@drawable/mycustombutton"
                     />
 
             </LinearLayout>

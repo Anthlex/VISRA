@@ -85,7 +85,7 @@
             android:layout_height="40dp"
             android:layout_margin="8dp"
             android:text="Cricket"
-            android:drawableLeft="@drawable/americanfootball"
+            android:drawableLeft="@drawable/cricket"
             ></CheckBox>
 
     </LinearLayout>
@@ -143,7 +143,8 @@
             android:height="0dp"
             android:text="Save"
             android:id="@+id/buttonSave"
-            android:background="#4ECDC4"
+            android:textColor="@color/color_white"
+            android:background="@drawable/mycustombutton"
             android:layout_alignParentBottom="true"
 
             />

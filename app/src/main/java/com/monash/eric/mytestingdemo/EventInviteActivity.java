@@ -30,6 +30,7 @@ public class EventInviteActivity extends AppCompatActivity {
     private Button showAllBtn;
     private Firebase mRootRef;
     private TextView tv_result;
+    private TextView tv_eventinvit;
     private ArrayList<String> eventIdList;
 
 
@@ -60,6 +61,8 @@ public class EventInviteActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
         progressDialog.show();
+
+        tv_eventinvit = (TextView) findViewById(R.id.tv_eventinvit);
 
         eventTitle = new ArrayList<>();
         eventList = new ArrayList<>();
@@ -124,6 +127,16 @@ public class EventInviteActivity extends AppCompatActivity {
                 }
 
                 progressDialog.dismiss();
+
+                // new added*
+                if(eventList.size() == 0)
+                {
+                    tv_eventinvit.setText("No New Event Invitation.");
+                }
+                else
+                {
+                    tv_eventinvit.setText("Event Invitation");
+                }
 
                 adapter.notifyDataSetChanged();
 

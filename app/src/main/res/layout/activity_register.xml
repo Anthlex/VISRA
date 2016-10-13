@@ -88,7 +88,9 @@
             android:layout_height="wrap_content"
             android:text="Continue"
             android:id="@+id/buttonContinue"
-            android:background="#4ECDC4"/>
+            android:textColor="@color/color_white"
+            android:background="@drawable/mycustombutton"
+            />
 
     </LinearLayout>
 

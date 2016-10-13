@@ -7,7 +7,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -110,6 +113,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 intent.putExtra("facility_name",facility_name_tv.getText().toString());
                 intent.putExtra("lng",longtitude);
                 intent.putExtra("lat",latitude);
+                intent.putExtra("sportList",playedSportsList);
                 startActivity(intent);
 
             }
@@ -126,7 +130,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         buttonCall = (Button) findViewById(R.id.call);
 
 
-
         // get values passed from Search Activity
         Intent intent = getIntent();
         longtitude = intent.getDoubleExtra("Longitude",0);
@@ -136,11 +139,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         playedSportsList = intent.getStringArrayListExtra("sportPlayedList");
         changeRoom_num = intent.getIntExtra("Changerooms",4);
 
-
-
-        Log.d(TAG,changeRoom_num+"");
-        Log.d(TAG,changeroomType.size()+"");
-        Log.d(TAG,changeroomType.get(changeRoom_num)+"");
 
 
 

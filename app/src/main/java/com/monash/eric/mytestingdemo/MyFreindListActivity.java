@@ -10,6 +10,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -32,6 +34,8 @@ public class MyFreindListActivity extends AppCompatActivity {
     private ArrayList<String> names;
     private ArrayList<Users> friends;
     private ArrayList<String> friend_ids;
+
+    private TextView tv_frinedstutas;
 
 
     private FirebaseAuth firebaseAuth;
@@ -56,6 +60,8 @@ public class MyFreindListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_freind_list);
 
         myfriend_lv = (ListView) findViewById(R.id.lv_myFriends);
+
+        tv_frinedstutas = (TextView)findViewById(R.id.my_friend_tv);
 
         names = new ArrayList<>();
         friend_ids = new ArrayList<>();
@@ -133,7 +139,19 @@ public class MyFreindListActivity extends AppCompatActivity {
                 {
                     firend_node.removeEventListener(allfriendListener);
                 }
+
+                // new added*
+                if(friend_ids.size() == 0)
+                {
+                    tv_frinedstutas.setText("You don't have any friends currently.");
+                }
+                else
+                {
+                    tv_frinedstutas.setText("My Friend");
+                }
+
             }
+
 
 
             @Override
@@ -172,7 +190,7 @@ public class MyFreindListActivity extends AppCompatActivity {
                     }
                 }
 
-                Log.d("mylist", friend_ids.size() + "**");
+//                Log.d("mylist", friend_ids.size() + "**");
 
                 if(friendDetialListener!=null)
                 {

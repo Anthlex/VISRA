@@ -22,7 +22,9 @@
             android:layout_height="100dp"
             android:text="Continue without login"
             android:id="@+id/buttonCancel"
-            android:background="#4ECDC4"/>
+            android:textColor="@color/color_white"
+            android:background="@drawable/mycustombutton"
+            />
 
 
         <EditText
@@ -54,7 +56,8 @@
             android:layout_height="wrap_content"
             android:text="Login"
             android:id="@+id/buttonLogin"
-            android:background="#4ECDC4"/>
+            android:textColor="@color/color_white"
+            android:background="@drawable/mycustombutton"/>
 
         <Button
             android:layout_margin="10dp"
@@ -62,7 +65,8 @@
             android:layout_height="wrap_content"
             android:text="Register"
             android:id="@+id/buttonRegister"
-            android:background="#4ECDC4"/>
+            android:textColor="@color/color_white"
+            android:background="@drawable/mycustombutton"/>
 
         </LinearLayout>
 

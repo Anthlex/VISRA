@@ -89,8 +89,8 @@
             android:id="@+id/btn_acceptReq"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:background="#4ECDC4"
-            />
+            android:textColor="@color/color_white"
+            android:background="@drawable/mycustombutton"            />
 
         <Button
             android:layout_margin="8dp"
@@ -100,7 +100,8 @@
             android:id="@+id/btn_rejectReq"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:background="#4ECDC4"
+            android:textColor="@color/color_white"
+            android:background="@drawable/mycustombutton"
             />
 
     </LinearLayout>

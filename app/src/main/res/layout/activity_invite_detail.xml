@@ -152,7 +152,8 @@
             android:layout_height="wrap_content"
             android:text="Accept"
             android:id="@+id/buttonAccept"
-            android:background="#4ECDC4"/>
+            android:textColor="@color/color_white"
+            android:background="@drawable/mycustombutton"/>
 
         <Button
             android:layout_margin="4dp"
@@ -160,7 +161,8 @@
             android:layout_height="wrap_content"
             android:text="Reject"
             android:id="@+id/buttonReject"
-            android:background="#4ECDC4"/>
+            android:textColor="@color/color_white"
+            android:background="@drawable/mycustombutton"/>
 
         <FrameLayout
             android:layout_width="match_parent"

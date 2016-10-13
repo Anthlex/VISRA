@@ -100,7 +100,6 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
                 }
                 Log.i("aa", et_suburb.getText().toString());
 
-                Log.d(TAG,"insearchactvity");
 
                 CallSearchSprostAPI callSearchSprostAPI = new CallSearchSprostAPI();
                 callSearchSprostAPI.execute("aa");
@@ -297,19 +296,11 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         try {
             StringBuilder sb = new StringBuilder();
             sb.append(GEO_BASE_URI);
-            sb.append(lng);
-            sb.append(",");
             sb.append(lat);
+            sb.append(",");
+            sb.append(lng);
             sb.append("&key=");
             sb.append(API_KEY);
-
-
-            // Gson gson = new Gson();
-            //convert course entity to string json by calling toJson method
-            //   String stringRegistrationJson = gson.toJson(registration);
-            //  Log.i("EricTestRegJSON", stringRegistrationJson);
-//            url = new URL ("https://maps.googleapis.com/maps/api/geocode/json?address=" +
-//                    URLEncoder.encode(address + " Australia ", "utf8")+"&region=au"+"&key="+APIKEY);
 
             Log.d(TAG,sb.toString());
 
@@ -354,7 +345,8 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         protected void onPostExecute(String result) {
             getSuburbFromJson(result);
             et_suburb.setText(suburb);
-            Log.i(TAG,result);
+
+
         }
     }
 
@@ -376,8 +368,7 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
             if(element[i].types[0].equals("locality"))
             {
                 suburb = element[i].long_name;
-                Log.d(TAG,"asadasdasdadas");
-                Log.d(TAG,suburb);
+
 
             }
         }

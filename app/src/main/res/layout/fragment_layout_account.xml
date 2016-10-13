@@ -7,11 +7,15 @@
     android:orientation="vertical" >
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+
+    >
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:orientation="vertical">
 
         <TextView
@@ -33,11 +37,11 @@
             >
 
             <TextView
-                android:layout_width="230dp"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:hint="Hello"
                 android:id="@+id/hello"
-                android:layout_margin="15dp"/>
+                android:layout_margin="10dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -49,6 +53,7 @@
                 <ImageButton
                 android:layout_width="80dp"
                 android:layout_height="120dp"
+                    android:background="@color/color_white"
                 android:id="@+id/imageView"
                 />
 
@@ -62,56 +67,65 @@
                     android:id="@+id/upload"
                     android:textSize="12dp"
                     android:text="camera"
-                    android:background="#4ECDC4"
-                    />
+                    android:background="@drawable/mycustombuttonopa"
+                    android:textColor="#2980B9"                   />
 
             </LinearLayout>
 
         </LinearLayout>
 
 
+
+
         <Button
-            android:layout_margin="6dp"
+            android:layout_margin="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="My Profile"
             android:id="@+id/buttonProfile"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:background="#4ECDC4"
+            android:background="@drawable/mycustombuttonopa"
+            android:textColor="#2980B9"
             />
 
         <Button
-            android:layout_margin="6dp"
+            android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="My Friends"
             android:id="@+id/button_viewFriends"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:background="#4ECDC4"
+            android:background="@drawable/mycustombuttonopa"
+            android:textColor="#2980B9"
+
             />
 
         <Button
-            android:layout_margin="6dp"
+            android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="My Event"
             android:id="@+id/button_viewEvent"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:background="#4ECDC4"
+            android:background="@drawable/mycustombuttonopa"
+            android:textColor="#2980B9"
             />
 
         <Button
-            android:layout_margin="6dp"
+            android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Logout"
             android:id="@+id/buttonLogout"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:background="#4ECDC4"
+            android:textColor="@color/color_white"
+            android:background="@drawable/mycustombutton"
             />
 
 

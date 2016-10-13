@@ -22,7 +22,7 @@ import java.util.HashMap;
 
 public class FriendRequestActivity extends AppCompatActivity {
 
-    private TextView textView;
+    private TextView tv_friendreq;
     private ListView lv_req;
 
     private ArrayAdapter<String> adapter;
@@ -42,13 +42,16 @@ public class FriendRequestActivity extends AppCompatActivity {
     //
     private ArrayList<String> userTitle;
 
+    //new added
+    ValueEventListener allfriendListener, allreqListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_request);
 
-        textView = (TextView)findViewById(R.id.tv_friendRequest);
+        tv_friendreq = (TextView)findViewById(R.id.tv_friendRequest);
         lv_req = (ListView)findViewById(R.id.listView_reqs);
 
         userTitle = new ArrayList<>();
@@ -66,9 +69,9 @@ public class FriendRequestActivity extends AppCompatActivity {
 
    //     Log.d(TAG,"infrinedReqactiity");
 
-        getAllRequestsUids(Current_userid);
-
-        getDetialsFromUidList(requests_uid_list);
+//        getAllRequestsUids(Current_userid);
+//
+//        getDetialsFromUidList(requests_uid_list);
 
 
 
@@ -105,9 +108,9 @@ public class FriendRequestActivity extends AppCompatActivity {
 
         // get a particular user by uid
         Firebase user_node = userAll_node.child(uid);
-        Firebase firend_node = user_node.child("Friends");
+        final Firebase firend_node = user_node.child("Friends");
 
-        firend_node.addValueEventListener(new ValueEventListener() {
+        allreqListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -125,11 +128,28 @@ public class FriendRequestActivity extends AppCompatActivity {
 
                     requests_uid_list.add(userMap.get("Friend_id"));
 
-                    Log.d(userMap.get("Friend_id"),"N/A");
-                    Log.d(userMap.get("action_user"),"N/A");
-                    Log.d(userMap.get("status"),"N/A");
+//                    Log.d(userMap.get("Friend_id"),"N/A");
+//                    Log.d(userMap.get("action_user"),"N/A");
+//                    Log.d(userMap.get("status"),"N/A");
 
                 }
+
+                // new added*
+                if(requests_uid_list.size() == 0)
+                {
+                    tv_friendreq.setText("No New Friends Requests.");
+                }
+                else
+                {
+                    tv_friendreq.setText("New Friend Requests");
+                }
+
+
+                if(allreqListener!=null)
+                {
+                    firend_node.removeEventListener(allreqListener);
+                }
+
 
             }
 
@@ -137,7 +157,9 @@ public class FriendRequestActivity extends AppCompatActivity {
             public void onCancelled(FirebaseError firebaseError) {
 
             }
-        });
+        };
+
+        firend_node.addValueEventListener(allreqListener);
 //
 //        Map<String, String> newFriend = new HashMap<String, String>();
 //        newFriend.put("Friend_id", other_userid);
@@ -150,14 +172,14 @@ public class FriendRequestActivity extends AppCompatActivity {
 
     private void getDetialsFromUidList(final ArrayList<String> uidList)
     {
-        Firebase userAll_node = new Firebase("https://visra-1d74b.firebaseio.com/Users");
+        final Firebase userAll_node = new Firebase("https://visra-1d74b.firebaseio.com/Users");
 
         Log.d(TAG,"displayAllRequests");
 
         request_user_list = new ArrayList<>();
 
         // get a particular user by uid
-        userAll_node.addValueEventListener(new ValueEventListener() {
+        allfriendListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -172,11 +194,13 @@ public class FriendRequestActivity extends AppCompatActivity {
 
                         }
 
-
-
                     }
                 }
 
+                if(allfriendListener!=null)
+                {
+                    userAll_node.removeEventListener(allfriendListener);
+                }
 
             }
 
@@ -184,7 +208,11 @@ public class FriendRequestActivity extends AppCompatActivity {
             public void onCancelled(FirebaseError firebaseError) {
 
             }
-        });
+        };
+
+        userAll_node.addValueEventListener(allfriendListener);
+
+
     }
 
 
@@ -210,11 +238,47 @@ public class FriendRequestActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 //
-        Log.d(TAG,userTitle.size()+"");
-        userTitle.clear();
-        adapter.notifyDataSetChanged();
+//        Log.d(TAG,userTitle.size()+"");
+//        userTitle.clear();
+//        adapter.notifyDataSetChanged();
+//
+//        Log.d(TAG,request_user_list.size()+"");
+//        Log.d(TAG,"RESUMED");
 
-        Log.d(TAG,request_user_list.size()+"");
-        Log.d(TAG,"RESUMED");
+
+
+        if(requests_uid_list!=null) {
+            requests_uid_list.clear();
+        }
+        if(request_user_list!=null) {
+            request_user_list.clear();
+        }
+        if(userTitle!=null) {
+            userTitle.clear();
+        }
+
+        adapter.notifyDataSetChanged();
+        getAllRequestsUids(Current_userid);
+        getDetialsFromUidList(requests_uid_list);
+
+
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(requests_uid_list!=null) {
+            requests_uid_list.clear();
+        }
+        if(request_user_list!=null) {
+            request_user_list.clear();
+        }
+        if(userTitle!=null) {
+            userTitle.clear();
+        }
+
+        adapter.notifyDataSetChanged();
     }
 }

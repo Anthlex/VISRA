@@ -158,10 +158,6 @@ public class InviteActivity extends AppCompatActivity {
 
                 }
 
-                if(friend_ids.size()==0)
-                {
-                    Friendlist_tv.setText("You don't have any friends right now");
-               }
 
             }
 

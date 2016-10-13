@@ -12,9 +12,10 @@
 
 
     <TextView
+        android:textSize="16sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Friend Request List put here"
+        android:text="New Friend Requests"
         android:id="@+id/tv_friendRequest"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
