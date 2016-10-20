@@ -9,22 +9,22 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.monash.eric.mytestingdemo.MyEventActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:id="@+id/tv_my_events"
-            android:text="My Events"/>
+            android:text="My Events"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
 
         <ListView
             android:layout_width="match_parent"
             android:layout_height="381dp"
-            android:id="@+id/listView">
+            android:id="@+id/listView"
+            android:layout_below="@+id/tv_my_events"
+            android:layout_alignParentStart="true">
 
         </ListView>
 
@@ -44,6 +44,5 @@
 
 
 
-    </LinearLayout>
 
 </RelativeLayout>

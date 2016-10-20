@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:fillViewport="true"
-    android:orientation="vertical" >
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
@@ -75,6 +70,7 @@
         </LinearLayout>
 
 
+    </LinearLayout>
 
 
         <Button
@@ -85,7 +81,8 @@
             android:layout_height="wrap_content"
             android:text="My Profile"
             android:id="@+id/buttonProfile"
-            android:layout_alignParentBottom="true"
+            android:layout_above="@+id/button_viewFriends"
+            android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:background="@drawable/mycustombuttonopa"
             android:textColor="#2980B9"
@@ -97,7 +94,8 @@
             android:layout_height="wrap_content"
             android:text="My Friends"
             android:id="@+id/button_viewFriends"
-            android:layout_alignParentBottom="true"
+            android:layout_above="@+id/button_viewEvent"
+            android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:background="@drawable/mycustombuttonopa"
             android:textColor="#2980B9"
@@ -105,16 +103,17 @@
             />
 
         <Button
-            android:layout_margin="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="My Event"
             android:id="@+id/button_viewEvent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
             android:background="@drawable/mycustombuttonopa"
             android:textColor="#2980B9"
-            />
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_above="@+id/buttonLogout"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true" />
 
         <Button
             android:layout_margin="5dp"
@@ -129,10 +128,8 @@
             />
 
 
-    </LinearLayout>
 
 
 
 </RelativeLayout>
 
-</ScrollView>
