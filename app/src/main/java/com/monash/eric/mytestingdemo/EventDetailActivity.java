@@ -1,6 +1,5 @@
 package com.monash.eric.mytestingdemo;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -30,10 +29,19 @@ import com.monash.eric.mytestingdemo.Entity.Event;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * EventDetialActivity display all the event details.
+ * User can participate in any of them if they'er interested in.
+ * The events a user have join will be added into a user's Myevent list
+ *
+ * @author Eric
+ * @since 1.0
+ */
 public class EventDetailActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
 
+    //view components
     private TextView textViewName;
     private TextView textViewDate;
     private TextView textViewTime;
@@ -44,30 +52,36 @@ public class EventDetailActivity extends FragmentActivity implements OnMapReadyC
     private Button back_btn;
     private Button join_btn;
 
-
-    private ProgressDialog progressDialog;
-
-
+    //firebase user root
     private Firebase mRef;
 
+    //event host id
     private String uid;
 
+    //venue name
     private String venue;
 
+    //define variables to store coordinates
     private double latitude;
     private double longtitude;
 
 
     private FirebaseAuth firebaseAuth;
+
+    //firebase event root
     private Firebase mRootRef;
 
+    //current user id
     private String curr_uid;
+    //selected event id
     private String selectedEventId;
 
 
     SharedPreferences sharedPreferences;
+    //current user name
     String Username;
 
+    //indicator for joining a event
     boolean joined = false;
 
 
@@ -76,40 +90,19 @@ public class EventDetailActivity extends FragmentActivity implements OnMapReadyC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_detail);
 
-
         Firebase.setAndroidContext(this);
         firebaseAuth = FirebaseAuth.getInstance();
 
-        //get the data pass from eventlist
+        //get the data passed from fragment_event
         Intent i = getIntent();
         Event event = (Event) i.getSerializableExtra("eventObj");
         //get passed selected ID
         selectedEventId = i.getStringExtra("selectID");
 
-        //Log.d("aass","-------++++++");
-
-        Log.d("aass",selectedEventId);
-
+        //get current user's name
         sharedPreferences = getSharedPreferences("userProfile", MODE_PRIVATE);
         Username = sharedPreferences.getString("Username", "n/a");
 
-
-        textViewDate = (TextView) findViewById(R.id.textViewDate);
-        textViewName = (TextView) findViewById(R.id.textViewName);
-        textViewTime = (TextView) findViewById(R.id.textViewTime);
-        textViewVenue = (TextView) findViewById(R.id.textViewVenue);
-        textViewSport = (TextView) findViewById(R.id.textViewSports);
-        textViewDesc = (TextView) findViewById(R.id.textViewDesc);
-        textViewHost = (TextView) findViewById(R.id.textViewHost);
-        back_btn = (Button) findViewById(R.id.back_btn_eventdetial);
-        back_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                startActivity(new Intent(EventDetailActivity.this, MainActivity.class));
-            }
-        });
-        join_btn = (Button) findViewById(R.id.join_btn_eventdetial);
 
         //check if the user has already join the event.
         if(firebaseAuth.getCurrentUser() != null){
@@ -117,30 +110,14 @@ public class EventDetailActivity extends FragmentActivity implements OnMapReadyC
             isJoin(selectedEventId);
         }
 
-        //getSlectedeventId();
-        join_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        //initial view components
+        initComponents();
 
-                if (firebaseAuth.getCurrentUser() == null) {
-                    Intent intent = new Intent(view.getContext(), LoginActivity.class);
-                    Toast.makeText(view.getContext(), "You need to login first!", Toast.LENGTH_SHORT).show();
-                    startActivity(intent);
-                } else {
-
-                    curr_uid = firebaseAuth.getCurrentUser().getUid();
-
-                    joinEvent(curr_uid, selectedEventId);
-                    join_btn.setText("Joined");
-                    join_btn.setEnabled(false);
-                }
-            }
-        });
-
+        //get the coordinates from event object
         String la = event.getLatitute();
         String lo = event.getLongtitue();
 
-
+        //convert string to double
         latitude = Double.parseDouble(la);
         longtitude = Double.parseDouble(lo);
 
@@ -165,7 +142,6 @@ public class EventDetailActivity extends FragmentActivity implements OnMapReadyC
                 Map<String, String> map = dataSnapshot.getValue(Map.class);
                 String username = map.get("Username");
                 textViewHost.setText(username);
-
 
             }
 
@@ -212,38 +188,12 @@ public class EventDetailActivity extends FragmentActivity implements OnMapReadyC
         mMap.getUiSettings().setZoomControlsEnabled(true);
     }
 
-/*
-    private void getSlectedeventId()
-    {
-        mRootRef = new Firebase("https://visra-1d74b.firebaseio.com/Event");
 
-
-        mRootRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                for (DataSnapshot child: dataSnapshot.getChildren()) {
-
-                    //Get the selected event id
-                    selectedEventId = child.getKey();
-                    Log.d("abc",selectedEventId);
-
-
-                }
-
-            }
-
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-    }
-    */
-
-
+    /**
+     * This method is used to join a selected event by a user
+     * @param uid user id
+     * @param selectedeventIdPara select event id
+     */
     private void joinEvent(final String uid, String selectedeventIdPara) {
         mRootRef = new Firebase("https://visra-1d74b.firebaseio.com/Event");
 
@@ -339,6 +289,51 @@ public class EventDetailActivity extends FragmentActivity implements OnMapReadyC
     protected void onResume() {
         super.onResume();
     }
+
+
+    private void initComponents()
+    {
+        textViewDate = (TextView) findViewById(R.id.textViewDate);
+        textViewName = (TextView) findViewById(R.id.textViewName);
+        textViewTime = (TextView) findViewById(R.id.textViewTime);
+        textViewVenue = (TextView) findViewById(R.id.textViewVenue);
+        textViewSport = (TextView) findViewById(R.id.textViewSports);
+        textViewDesc = (TextView) findViewById(R.id.textViewDesc);
+        textViewHost = (TextView) findViewById(R.id.textViewHost);
+        back_btn = (Button) findViewById(R.id.back_btn_eventdetial);
+        join_btn = (Button) findViewById(R.id.join_btn_eventdetial);
+
+
+        //set listener for back button
+        back_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
+        //set listener for join button
+        join_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (firebaseAuth.getCurrentUser() == null) {
+                    Intent intent = new Intent(view.getContext(), LoginActivity.class);
+                    Toast.makeText(view.getContext(), "You need to login first!", Toast.LENGTH_SHORT).show();
+                    startActivity(intent);
+                } else {
+
+                    curr_uid = firebaseAuth.getCurrentUser().getUid();
+
+                    joinEvent(curr_uid, selectedEventId);
+                    join_btn.setText("Joined");
+                    join_btn.setEnabled(false);
+                }
+            }
+        });
+
+    }
+
 }
 
 

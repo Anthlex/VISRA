@@ -31,42 +31,68 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * CreateEventActivity is used to save user's personal information
+ *
+ * @author  Anthony, Eric
+ * @since 1.0
+ */
+
 public class CreateEventActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    // view components
     private EditText editTextName;
     private EditText editTextDate;
     private EditText editTextVenue;
     private EditText editTextTime;
     private EditText editTextDesc;
-
     private TextView tv_weatherForeCast;
     private Switch aSwitch;
+    private Button buttonCreate;
+    private Spinner spinner;
 
 
+    //User id
     private String uid;
+    //user name
     private String name;
+    //event date
     private String date;
+    //event venue
     private String venue;
+    //event sport
     private String sport;
+    //event description
     private String desc;
+    //event time
     private String time;
 
+    //Current user's name
+    private String Username;
+
+    //sports can be played in the particular venue
     private ArrayList<String> sportList;
+
+    // Spinner Drop down elements
+    private List<String> categories;
 
     //coordinates
     private double longtitude;
     private double latitude;
 
+    //Firebase event root
     private Firebase mRootRef;
+    //Firebase user root
     private Firebase mRef;
 
+    //FireAuth varible
     private FirebaseAuth firebaseAuth;
+    //FireAuth authentication listener
     private FirebaseAuth.AuthStateListener authStateListener;
 
-    private Button buttonCreate;
-
+    //SharedPreference for store and retrieve user's name
     SharedPreferences sharedPreferences;
-    String Username;
+
 
 
     @Override
@@ -74,11 +100,47 @@ public class CreateEventActivity extends AppCompatActivity implements AdapterVie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
 
+
+        // retrieve venue information from MapAcivity
+        Intent intent = getIntent();
+        venue = intent.getStringExtra("facility_name");
+        longtitude = intent.getDoubleExtra("lng", 0);
+        latitude = intent.getDoubleExtra("lat", 0);
+        sportList = intent.getStringArrayListExtra("sportList");
+
+        categories = new ArrayList<String>();
+
+        if(sportList != null)
+        {
+            categories = new ArrayList<String>();
+            categories = sportList;
+        }
+        else
+        {
+            categories.add("Soccer");
+            categories.add("Basketball");
+            categories.add("Table Tennis");
+            categories.add("Swimming");
+            categories.add("Badminton");
+            categories.add("Volleyball");
+            categories.add("Cricket");
+            categories.add("Snooker");
+            categories.add("Cycling");
+            categories.add("Hockey");
+            categories.add("Tennis");
+            categories.add("Rugby Union");
+            categories.add("Rugby Legue");
+        }
+
+
+        initComponents();
+
+        setListenersForComponents();
+
         firebaseAuth = FirebaseAuth.getInstance();
 
         if (firebaseAuth.getCurrentUser() != null) {
-            //profile activity here
-            //TODO:
+
             uid = firebaseAuth.getCurrentUser().getUid();
 
         } else {
@@ -92,8 +154,17 @@ public class CreateEventActivity extends AppCompatActivity implements AdapterVie
         Username = sharedPreferences.getString("Username", "n/a");
 
         Firebase.setAndroidContext(this);
-
         mRootRef = new Firebase("https://visra-1d74b.firebaseio.com/Event");
+
+
+
+    }
+
+    /**
+     *  This method initials all components
+     */
+    private void initComponents()
+    {
 
         editTextName = (EditText) findViewById(R.id.editTextName);
         editTextDate = (EditText) findViewById(R.id.editTextDate);
@@ -101,6 +172,37 @@ public class CreateEventActivity extends AppCompatActivity implements AdapterVie
         editTextDesc = (EditText) findViewById(R.id.editTextDesc);
         editTextTime = (EditText) findViewById(R.id.editTextTime);
         tv_weatherForeCast = (TextView) findViewById(R.id.tv_forecast);
+        buttonCreate = (Button) findViewById(R.id.buttonCreate);
+        aSwitch = (Switch) findViewById(R.id.buttonSw);
+        spinner = (Spinner) findViewById(R.id.spinner);
+
+        // set the venue name frome the Inetent object
+        editTextVenue.setText(venue);
+
+
+
+    }
+
+    /**
+     * This method set listeners for components
+     *
+     */
+    private void setListenersForComponents()
+    {
+
+        buttonCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                createEvent();
+            }
+        });
+
+
+        // Spinner click listener
+        spinner.setOnItemSelectedListener(this);
+
+
         tv_weatherForeCast.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,15 +213,6 @@ public class CreateEventActivity extends AppCompatActivity implements AdapterVie
 
             }
         });
-
-        buttonCreate = (Button) findViewById(R.id.buttonCreate);
-
-        Intent intent = getIntent();
-        venue = intent.getStringExtra("facility_name");
-        longtitude = intent.getDoubleExtra("lng", 0);
-        latitude = intent.getDoubleExtra("lat", 0);
-        sportList = intent.getStringArrayListExtra("sportList");
-        editTextVenue.setText(venue);
 
 
         editTextDate.setOnClickListener(new View.OnClickListener() {
@@ -163,51 +256,6 @@ public class CreateEventActivity extends AppCompatActivity implements AdapterVie
             }
         });
 
-
-        // Spinner element
-        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-
-        // Spinner click listener
-        spinner.setOnItemSelectedListener(this);
-
-        // Spinner Drop down elements
-
-        List<String> categories = new ArrayList<String>();
-
-        if(sportList == null ) {
-            categories.add("Soccer");
-            categories.add("Basketball");
-            categories.add("Table Tennis");
-            categories.add("Swimming");
-            categories.add("Badminton");
-            categories.add("Volleyball");
-            categories.add("Cricket");
-            categories.add("Snooker");
-            categories.add("Cycling");
-            categories.add("Hockey");
-            categories.add("Tennis");
-            categories.add("Rugby Union");
-            categories.add("Rugby Legue");
-        }
-        else {
-            categories = sportList;
-        }
-
-
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
-
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
-
-
-        aSwitch = (Switch) findViewById(R.id.buttonSw);
-
-        //set the switch to ON
-        aSwitch.setChecked(false);
         //attach a listener to check for changes in state
         aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -224,6 +272,9 @@ public class CreateEventActivity extends AppCompatActivity implements AdapterVie
             }
         });
 
+        //set the switch to ON
+        aSwitch.setChecked(false);
+
         //check the current state before we display the screen
         if (aSwitch.isChecked()) {
             buttonCreate.setText("Invite friends");
@@ -232,26 +283,21 @@ public class CreateEventActivity extends AppCompatActivity implements AdapterVie
         }
 
 
-        buttonCreate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        // Creating adapter for spinner
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
 
-                createEvent();
-            }
-        });
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinner.setAdapter(dataAdapter);
 
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        // On selecting a spinner item
-        sport = parent.getItemAtPosition(position).toString();
-    }
-
-    public void onNothingSelected(AdapterView<?> arg0) {
-        // TODO Auto-generated method stub
-    }
-
+    /**
+     * This method is used to create event
+     * with all details entered by the user.
+     */
     private void createEvent() {
 
         name = editTextName.getText().toString().trim();
@@ -406,6 +452,16 @@ public class CreateEventActivity extends AppCompatActivity implements AdapterVie
             startActivity(new Intent(CreateEventActivity.this, MainActivity.class));
         }
 
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        // On selecting a spinner item
+        sport = parent.getItemAtPosition(position).toString();
+    }
+
+    public void onNothingSelected(AdapterView<?> arg0) {
+        // TODO Auto-generated method stub
     }
 
 }

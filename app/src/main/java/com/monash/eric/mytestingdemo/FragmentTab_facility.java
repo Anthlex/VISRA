@@ -26,12 +26,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -57,22 +51,28 @@ import java.util.Scanner;
 
 import javax.net.ssl.HttpsURLConnection;
 
-
+/**
+ * FragmentTab_facility is used to display the user's search result
+ * User can click on a particular facility for further information
+ *
+ * @author   Eric
+ * @since  1.0
+ */
 public class FragmentTab_facility extends ListFragment {
 
     //Google GeoCoding URL Setitings
     private static final String GEO_BASE_URI = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
-
+    //Google API KRY
     private static final String API_KEY = "AIzaSyCxzmhZsWml6UQUqK_ss8aPvPzBk1u-YrU";
-
+    //Debug tag
     private static final String TAG = "FragmentTab_facility";
-
     //url for backend connection
     private static final String BASE_URI = "http://visra9535.cloudapp.net/api/searchall";
     //url for finding playedsports by facilityname
     private static final String URI_FIND_PLAYEDSPORTS = "http://visra9535.cloudapp.net/api/searchByName";
 
 
+    //view components
     private Button newSearch;
     private Button showNearby;
 
@@ -85,33 +85,32 @@ public class FragmentTab_facility extends ListFragment {
     //A list stores all the playedsports in a certain facility
     ArrayList<String> playedSportsList = null;
     ArrayAdapter<String> adapter;
+    //Define a variable to store a Json Object
     JSONObject jObject = null;
+    //Define a variable to store a Json Array
     JSONArray jArray = null;
 
-
-    // -37.8776187
-    // 145.0441267
     //variables for coordinates
     double curr_longtitude_from_main ;
     double curr_latitude_from_main ;
 
-    ///////tesing inter comm
+    //interface used for communication between MainActivity and FragmentTab_facility
     OnHeadlineSelectedListener mCallback;
 
 
+    //define a variable to store the name of a facility
     private String selected_facility;
+    //define a varibale to store the name of the suburb
     private String suburb;
-    String temp;
-
+    //define a Intent object
     Intent intentforMap;
 
+    //define a progressDialog
     private ProgressDialog progressDialog;
-
 
     // Container Activity must implement this interface
     public interface OnHeadlineSelectedListener {
         public double getLongtitude();
-
         public double getLatiitude();
     }
 
@@ -146,13 +145,7 @@ public class FragmentTab_facility extends ListFragment {
         View view = inflater.inflate(R.layout.fragment_layout_facilities, null);
 
 
-//        curr_longtitude_from_main = getArguments().getDouble("lng");
-//        curr_latitude_from_main = getArguments().getDouble("lat");
-//
-//
 
-
-        //callGeoWS(curr_longtitude_from_main,curr_latitude_from_main)
 
         showNearby = (Button) view.findViewById(R.id.button2_showNearby);
         showNearby.setOnClickListener(new View.OnClickListener() {
@@ -163,13 +156,7 @@ public class FragmentTab_facility extends ListFragment {
                 progressDialog.show();
                 curr_longtitude_from_main = mCallback.getLongtitude();
 
-                Log.d(TAG,curr_longtitude_from_main+"long");
-                curr_latitude_from_main = mCallback.getLatiitude();
-
-                Log.d(TAG,curr_latitude_from_main+"lat");
-
                 CallGeoWS callGeoWS = new CallGeoWS();
-
                 callGeoWS.execute(curr_longtitude_from_main, curr_latitude_from_main);
 
 
@@ -191,11 +178,12 @@ public class FragmentTab_facility extends ListFragment {
             }
         });
 
-
-
         return view;
     }
 
+    /**
+     *     this method is for a user to perform new search operation
+     */
     public void SearchFacility() {
         Intent intent = new Intent(getActivity(), SearchActivity.class);
         intent.putExtra("lng", curr_longtitude_from_main);
@@ -210,7 +198,6 @@ public class FragmentTab_facility extends ListFragment {
 
         if (resultCode == Activity.RESULT_OK) {
             String JsonResult = data.getStringExtra("result");
-            //Log.d(TAG,JsonResult);
             updateList(JsonResult);
         }
 
@@ -221,6 +208,7 @@ public class FragmentTab_facility extends ListFragment {
 
         super.onDestroyView();
     }
+
 
     // send the data of a clicked item to map activity
     @Override
@@ -258,14 +246,14 @@ public class FragmentTab_facility extends ListFragment {
 
     }
 
-    //display the result from JSON response
+    /**
+     * This method is used to display the result from JSON response as a list
+     * @param JsonString
+     */
     public void updateList(String JsonString) {
         facIdList = new ArrayList<>();
         facilityList = new ArrayList<>();
         if (!JsonString.equals("")) {
-
-
-
             //convert string to JSONArray
             try {
                 jArray = new JSONArray(JsonString);
@@ -301,47 +289,25 @@ public class FragmentTab_facility extends ListFragment {
 
             adapter.notifyDataSetChanged();
 
-
-
             Toast.makeText(getContext(), "No facilities found for your search criteria", Toast.LENGTH_SHORT).show();
         }
 
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-
-    }
-
-
-    @Override
     public void onResume() {
         super.onResume();
+
         curr_longtitude_from_main = mCallback.getLongtitude();
         curr_latitude_from_main = mCallback.getLatiitude();
-        //  checkPlayServices();
-//        if (mGoogleApiClient.isConnected()) {
-//            startLocationUpdates();
-//        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-//        if (mGoogleApiClient.isConnected()) {
-//            mGoogleApiClient.disconnect();
-//        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        //stopLocationUpdates();
     }
 
 
+    /**
+     * This method is used to find facilities base on the suburb
+     * @param subrubs
+     * @return
+     */
     protected String callSearchSportsWS(String subrubs) {
         HashMap<String, String> postDataParams = new HashMap<>();
         postDataParams.put("suburbs",subrubs);
@@ -386,6 +352,12 @@ public class FragmentTab_facility extends ListFragment {
 
     }
 
+    /**
+     * This method is used to append parameters for web service query using POST
+     * @param params for POST query
+     * @return the completed query string
+     * @throws UnsupportedEncodingException
+     */
     private String getPostDataString(HashMap<String, String> params) throws UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;
@@ -400,12 +372,18 @@ public class FragmentTab_facility extends ListFragment {
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
         }
 
-      //  Log.d(TAG,result.toString());
-
         return result.toString();
     }
 
 
+    /**
+     * This method will call Google Place API with the current longitude and latitude
+     * and return a Json output with details of that location
+     *
+     * @param lng the current longitude of the user
+     * @param lat the current latitude of the user
+     * @return the JSON String provided by Google Place API
+     */
     private String callGeoWS(double lng, double lat) {
 
         URL url = null;
@@ -421,16 +399,7 @@ public class FragmentTab_facility extends ListFragment {
             sb.append("&key=");
             sb.append(API_KEY);
 
-            Log.d(TAG,sb.toString());
 
-            // Gson gson = new Gson();
-            //convert course entity to string json by calling toJson method
-            //   String stringRegistrationJson = gson.toJson(registration);
-            //  Log.i("EricTestRegJSON", stringRegistrationJson);
-//            url = new URL ("https://maps.googleapis.com/maps/api/geocode/json?address=" +
-//                    URLEncoder.encode(address + " Australia ", "utf8")+"&region=au"+"&key="+APIKEY);
-
-//
             url = new URL(sb.toString());
 
             conn = (HttpURLConnection) url.openConnection();
@@ -459,6 +428,9 @@ public class FragmentTab_facility extends ListFragment {
     }
 
 
+    /**
+     *  This AsyncTask is used to call google place API.
+     */
     private class CallGeoWS extends AsyncTask<Double, Void, String> {
 
         @Override
@@ -469,19 +441,24 @@ public class FragmentTab_facility extends ListFragment {
 
         @Override
         protected void onPostExecute(String result) {
-            getSuburbFromJson(result);
-            Log.d(TAG, result);
+            suburb = getSuburbFromJson(result);
             executeSerachSportAPI();
         }
     }
 
+    /**
+     * This method will retrieve the subsurb from the Json output
+     * @param originalJson the Json data returned by Google place API
+     * @return the name of the suburb, if no suburb found then return null
+     */
+
     private String getSuburbFromJson(String originalJson) {
 
+        String targetSuburb = null;
 
         Gson gson = new Gson();
         GeoResponse geoResponse = gson.fromJson(originalJson, GeoResponse.class);
 
-        Log.d(TAG,geoResponse.results+"");
         if(geoResponse.results.length>0) {
             GeoResponse.address_component[] element = geoResponse.results[0].address_components;
 
@@ -489,16 +466,21 @@ public class FragmentTab_facility extends ListFragment {
             for (int i = 0; i < element.length; i++) {
 
                 if (element[i].types[0].equals("locality")) {
-                    suburb = element[i].long_name;
-                    //Log.d(TAG, suburb);
-
+                    //assign the name of the suburb to the varibale
+                    targetSuburb = element[i].long_name;
+                    break;
                 }
             }
         }
 
-        return null;
+        return targetSuburb;
+
     }
 
+    /**
+     * This AsyncTask is used to call facility search web service with provided suburb
+     * It returns a list of facilities after calling callSearchSportsWS.
+     */
     private class CallSearchSprostAPI extends AsyncTask<String, Void, String> {
 
         @Override
@@ -509,8 +491,6 @@ public class FragmentTab_facility extends ListFragment {
 
         @Override
         protected void onPostExecute(String s) {
-
-
             updateList(s);
             progressDialog.dismiss();
 
@@ -519,7 +499,10 @@ public class FragmentTab_facility extends ListFragment {
 
     }
 
-
+    /**
+     * This AsyncTask is used to call Sport search with a provided facility
+     *
+     */
     private class CallSearchSprostAPIFindSports extends AsyncTask<String, Void, String> {
 
         @Override
@@ -549,16 +532,18 @@ public class FragmentTab_facility extends ListFragment {
                 e.printStackTrace();
             }
 
-
             startActivity(intentforMap);
-
-            //updateList(s);
 
         }
 
 
     }
 
+    /**
+     * This method is used to find sports in a facility
+     * @param facility_name the name of the facility
+     * @return the json output
+     */
 
     protected String callFindSportsListWS(String facility_name) {
         HashMap<String, String> postDataParams = new HashMap<>();
@@ -600,7 +585,6 @@ public class FragmentTab_facility extends ListFragment {
             e.printStackTrace();
         }
 
-     //   Log.d(TAG,response);
         return response;
 
     }
@@ -617,8 +601,4 @@ public class FragmentTab_facility extends ListFragment {
         callSearchSprostAPIFindSports.execute(selected_facility);
     }
 
-    public void populateSportsListFromJson(String jsonResponse)
-    {
-
-    }
 }

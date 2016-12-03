@@ -1,12 +1,15 @@
 package com.monash.eric.mytestingdemo;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,13 +68,27 @@ public class FragmentTab_user extends Fragment {
 
     private String uid;
 
-    @Override
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d("userl","onattach");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d("userl","onCreate");
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_layout_account, null);
 
         Firebase.setAndroidContext(this.getContext());
+        Log.d("userl","onCreateview");
 
 
         firebaseAuth = FirebaseAuth.getInstance();
@@ -86,7 +103,13 @@ public class FragmentTab_user extends Fragment {
 
                 if (firebaseAuth.getCurrentUser() == null) {
 
+                    if(getActivity() == null)
+                    {
+                        Log.d("testacti","nullact");
+                    }
                     startActivity(new Intent(getActivity(), LoginActivity.class));
+                    getActivity().finish();
+
 
                 }
                 else{
@@ -98,6 +121,8 @@ public class FragmentTab_user extends Fragment {
                         @Override
                         public void onSuccess(Uri uri) {
 
+
+                            Log.d("tty",getContext().toString());
 
                             Picasso.with(getContext()).load(uri).fit().rotate(90f).centerCrop().into(imageView);
                             //Picasso.with(getContext()).load(uri).rotate(90f).centerCrop().resize(360,240).into(imageView);
@@ -188,7 +213,7 @@ public class FragmentTab_user extends Fragment {
 
                 Auth.GoogleSignInApi.signOut(mGoogleApiClient);
 
-                startActivity(new Intent(getActivity(), LoginActivity.class));
+
 
             }
         });
@@ -227,11 +252,7 @@ public class FragmentTab_user extends Fragment {
 
     private void successful() {
 
-
-
         FirebaseUser user = firebaseAuth.getCurrentUser();
-
-
         String uid = user.getUid();
 
         mRef = new Firebase("https://visra-1d74b.firebaseio.com/Users");
@@ -278,7 +299,6 @@ public class FragmentTab_user extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
         if(requestCode == CAMERA_REQUEST_CODE && resultCode == getActivity().RESULT_OK) {
 
 
@@ -301,7 +321,6 @@ public class FragmentTab_user extends Fragment {
                     String url = downloadUri.toString();
 
                     Picasso.with(getContext()).load(downloadUri).fit().centerCrop().rotate(90f).into(imageView);
-                   // Picasso.with(getContext()).load(downloadUri).rotate(90f).centerCrop().resize(360,240).into(imageView);
 
                     Firebase childRef = mRef.child(uid);
 
@@ -374,9 +393,19 @@ public class FragmentTab_user extends Fragment {
     }
 
     @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        Log.d("userl","onViewStateRestored");
+
+
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         firebaseAuth.addAuthStateListener(authStateListener);
+        Log.d("userl","onStart");
+
     }
 
     @Override
@@ -384,6 +413,17 @@ public class FragmentTab_user extends Fragment {
         super.onStop();
         mGoogleApiClient.stopAutoManage(getActivity());
         mGoogleApiClient.disconnect();
+        firebaseAuth.removeAuthStateListener(authStateListener);
+        Log.d("userl","onStop");
+
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("userl","onDetach");
+
+    }
+
 
 }

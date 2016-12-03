@@ -31,46 +31,49 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.HashMap;
 
+/**
+ * MainActivity is the entry activity of the applications.
+ * It holds four fragments for four sections(Facility, Pal, Event and User).
+ *
+ * It also keeps tracks of the current location of the user with google location service.
+ *
+ * @author  Eric
+ * @since 1.0
+ */
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,LocationListener,FragmentTab_facility.OnHeadlineSelectedListener {
 
-
     private static final String TAG = "MainActivity";
-
-
     //Google GeoCoding URL Setitings
     private static final String GEO_BASE_URI = "https://maps.googleapis.com/maps/api/geocode/json?latlng=";
-
+    //Google API KEY
     private static final String API_KEY = "AIzaSyCxzmhZsWml6UQUqK_ss8aPvPzBk1u-YrU";
-
-
     //variables for coordinates
     public double curr_longtitude;
     public double curr_latitude;
-
-    //get current location
+    //play service resolution request
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 1000;
-
+    //variable to store user Lost Know location
     private Location mLastLocation;
-
     // Google client to interact with Google API
     private GoogleApiClient mGoogleApiClient;
-
+    //variable for location request
     private LocationRequest mLocationRequest;
-
     // Location updates intervals in sec
     private static int UPDATE_INTERVAL = 10000; // 10 sec
     private static int FATEST_INTERVAL = 5000; // 5 sec
     private static int DISPLACEMENT = 10; // 10 meters
 
-
+    //Firebase authentication variable
     private FirebaseAuth firebaseAuth;
+    //Firebase User root
     private Firebase mRootRef;
 
+    //Define a sharedpreference editor object
     SharedPreferences.Editor editor;
 
+    //Current user id
     private String currUid;
-
 
     //Define a FragmentTabHost Object
     private FragmentTabHost mTabHost;
@@ -90,8 +93,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     //VauleListener
     ValueEventListener sportValueListener,updatesportListner;
 
-    //check sport field
-    boolean sportIsEmptybool = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,14 +103,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Firebase.setAndroidContext(this);
 
         firebaseAuth = FirebaseAuth.getInstance();
-
-
         if(firebaseAuth.getCurrentUser() != null) {
             currUid = firebaseAuth.getCurrentUser().getUid();
+            //get the user sports preference if the current user is not null
             if (currUid != null || !currUid.equals("")) {
-
-                sportIsEmpty(currUid);
-
+                updateUserSportsPreference(currUid);
             }
         }
 
@@ -118,21 +116,16 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         // First we need to check availability of play services
         if (checkPlayServices()) {
-
             // Building the GoogleApi client
             buildGoogleApiClient();
-
             createLocationRequest();
         }
 
-
-
-
-
-
     }
 
-    //initialize view
+    /**
+     *    initialize view, adding fragments in tabhost
+     */
     private void initView()
     {
         layoutInflater = LayoutInflater.from(this);
@@ -148,22 +141,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         }
 
-//        mTabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
-//            @Override
-//            public void onTabChanged(String s) {
-//                for (int i = 0; i < mTabHost.getTabWidget().getChildCount(); i++) {
-//                    tab.getTabWidget().getChildAt(i)
-//                            .setBackgroundResource(R.drawable.tab_selected); // unselected
-//                }
-//                tab.getTabWidget().getChildAt(tab.getCurrentTab())
-//                        .setBackgroundResource(R.drawable.tab_unselected); // selected
-//
-//            }
-//        });
     }
 
 
-    //set up tabhost component
+    /**
+     *     get view from tabhost accroding to the index
+     *     @param index the index of the tab
+     *     @return View
+     */
     private View getTabItemView(int index){
         View view = layoutInflater.inflate(R.layout.tab_item_view, null);
 
@@ -180,11 +165,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onStart() {
         super.onStart();
-        //
-            Log.d(TAG,"MainActivity on start ");
-
         if (mGoogleApiClient != null) {
-//            Log.d(TAG,mGoogleApiClient.toString());
             mGoogleApiClient.connect();
         }
     }
@@ -193,8 +174,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onResume() {
         super.onResume();
         checkPlayServices();
-          Log.d(TAG,"MainActivity on resume ");
-//            Log.d(TAG,mGoogleApiClient.toString());
             if(mGoogleApiClient != null) {
                 if (mGoogleApiClient.isConnected()) {
                     startLocationUpdates();
@@ -202,33 +181,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
     }
 
+    @Override
     public void onStop() {
-        Log.d(TAG,"MainActivity on stop ");
-
         super.onStop();
         if (mGoogleApiClient.isConnected()) {
             mGoogleApiClient.disconnect();
         }
     }
 
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        Log.d(TAG,"MainActivity on pause ");
-
-        if(firebaseAuth.getCurrentUser() != null) {
-            currUid = firebaseAuth.getCurrentUser().getUid();
-            if (currUid != null || !currUid.equals("")) {
-
-                sportIsEmpty(currUid);
-                //if()child("Sports");
-                // updateUserInterest(currUid);
-            }
-        }
-        //   Log.d(TAG,"MainActivity on pause ");
-        //stopLocationUpdates();
-    }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -247,10 +207,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onLocationChanged(Location location) {
         // Assign the new location
         mLastLocation = location;
-
         curr_longtitude = location.getLongitude();
         curr_latitude = location.getLatitude();
-        Log.d(TAG,"locaction changed" + mLastLocation.toString());
 
     }
 
@@ -275,8 +233,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 Toast.makeText(this.getApplicationContext(),
                         "This device is not supported.", Toast.LENGTH_LONG)
                         .show();
-                //terminate app
-                //getActivity().finish();
             }
             return false;
         }
@@ -299,7 +255,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      * Creating google api client object
      * */
     protected synchronized void buildGoogleApiClient() {
-        Log.d(TAG,"buildclient");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -307,8 +262,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     }
 
     /**
-     * Method to display the location on UI
-     * */
+     * Method to display the location on the view
+     *
+     */
     private void displayLocation() {
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -329,13 +285,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (mLastLocation != null) {
             curr_longtitude = mLastLocation.getLongitude();
             curr_latitude = mLastLocation.getLatitude();
-//              Log.d(TAG,"displayed log and lat");
-//
-//              Log.d(TAG,curr_longtitude + ", " + curr_latitude);
+
 
         } else {
-
-            //       Log.d(TAG,"(Couldn't get the location. Make sure location is enabled on the device)");
+            Log.d(TAG,"(Couldn't get the location. Make sure location is enabled on the device)");
         }
     }
 
@@ -345,7 +298,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
      * */
     protected void startLocationUpdates() {
 
-           Log.d(TAG,"Starting updates");
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
 
@@ -361,29 +313,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     @Override
     public double getLongtitude() {
-        Log.d(TAG,"longget" + curr_longtitude) ;
         return curr_longtitude;
     }
 
     @Override
     public double getLatiitude() {
-        Log.d(TAG,"latt" + curr_latitude) ;
-
         return curr_latitude;
     }
-
-
-//    @Override
-//    public void saysomething() {
-//
-//
-//        Log.d(TAG,"say sth");
-//        FragmentTab_facility fragobj = new FragmentTab_facility();
-//
-//        Bundle args = new Bundle();
-//        args.putString("hello", "mao world");
-//        fragobj.setArguments(args);
-//    }
 
     private void updateUserInterest(String uid)
     {
@@ -395,10 +331,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
         Firebase usernode = mRootRef.child(uid);
         final Firebase sportnode = usernode.child("Sports");
-
-//        Log.d(TAG,"updatedinter" + "**");
-//
-//        Log.d(TAG,sportnode.getKey().toString() + "**");
 
 
         updatesportListner = new ValueEventListener() {
@@ -429,25 +361,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     }
 
-    private void sportIsEmpty(final String uid)
+    /**
+     * This method will get the user sports preferences
+     * @param uid current user's id
+     */
+    private void updateUserSportsPreference(final String uid)
     {
 
         final Firebase mroot = new Firebase("https://visra-1d74b.firebaseio.com/Users");
-        Firebase usernode = mroot.child(uid);
 
         sportValueListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-
-
                 for(DataSnapshot child: dataSnapshot.getChildren())
                 {
                     HashMap<String, String> userMap = (HashMap<String, String>) child.getValue();
-                    Log.d("tttt",userMap.toString());
                     if(userMap.containsKey("Sports"))
                     {
-                        Log.d("tttt","contians");
                         // sportIsEmptybool = false;
                         if(sportValueListener != null)
                         {
@@ -457,8 +388,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                         updateUserInterest(uid);
                     }
                 }
-                // usernode.addValueEventListener(sportValueListener);
-
             }
 
             @Override
@@ -471,6 +400,12 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         {
             mroot.removeEventListener(sportValueListener);
         }
+
+    }
+
+    //disable back button
+    @Override
+    public void onBackPressed() {
 
     }
 

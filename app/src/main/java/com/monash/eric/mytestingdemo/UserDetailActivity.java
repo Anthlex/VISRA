@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,30 +20,41 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * UserDetailActivity is used to display a selected user information
+ * User can add a selected user as a friend if they want to
+ *
+ * @author Eric
+ * @since 1.0
+ */
+
 public class UserDetailActivity extends AppCompatActivity {
 
+    //debug tag
     private static final String TAG = "UserDetailActivity";
 
+    //view components
     private TextView textViewUsername;
     private TextView textViewGender;
-    //private TextView textViewBirthday;
     private TextView textViewCountry;
     private TextView textViewSports;
+    private Button buttonOk;
+    private Button addFriend_btn;
 
     // fire base user credentials
     private FirebaseAuth firebaseAuth;
     //firebase object
     private Firebase mRootRef;
 
+    //the user ids in a user's friend list
     private ArrayList<String> friend_ids;
 
-
+    //current user id
     private String curr_uid;
 
+    //the id of the user is to be added as a friend
     private String addfriend_id;
 
-    private Button buttonOk;
-    private Button addFriend_btn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,14 +67,7 @@ public class UserDetailActivity extends AppCompatActivity {
 
         friend_ids = new ArrayList<>();
 
-
-        textViewUsername = (TextView)findViewById(R.id.friendReqDetails_tvUsername);
-        textViewGender = (TextView)findViewById(R.id.friendReqDetails_tvGender);
-        //textViewBirthday = (TextView)findViewById(R.id.friendReqDetails_tvBirthday);
-        textViewCountry = (TextView)findViewById(R.id.friendReqDetails_tvCountry);
-        textViewSports = (TextView)findViewById(R.id.friendReqDetails_tVSports);
-        buttonOk = (Button)findViewById(R.id.ok_btn_user_detail_activity);
-        addFriend_btn = (Button)findViewById(R.id.addfriend_btn_user_detail_act);
+        initComponents();
 
         curr_uid = firebaseAuth.getCurrentUser().getUid();
 
@@ -73,30 +76,21 @@ public class UserDetailActivity extends AppCompatActivity {
 
         addfriend_id = users.getUser_id();
 
+        //display user details passed from intent
         textViewSports.setText("Interests :" + users.getSports());
         textViewUsername.setText("Name :" +users.getUsername());
-        //textViewBirthday.setText(users.getBirthday());
         textViewGender.setText("Gender :" +users.getGender());
         textViewCountry.setText("Country :" +users.getCountry());
 
-        addFriend_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addFriend(curr_uid,addfriend_id);
 
-            }
-        });
-
-        buttonOk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(UserDetailActivity.this,MainActivity.class));
-            }
-        });
+        setListenersForComponents();
 
         checkFriend();
     }
 
+    /**
+     * This method is used to check the user if it is already a friend
+     */
     private void checkFriend() {
 
         mRootRef = new Firebase("https://visra-1d74b.firebaseio.com/Users");
@@ -116,10 +110,8 @@ public class UserDetailActivity extends AppCompatActivity {
                     if (userMap.get("status").equals("1")) {
 
                         friend_ids.add(userMap.get("Friend_id"));
-                        //Log.d(TAG,userMap.get("Friend_id") );
                     }
 
-                    Log.d(TAG,friend_ids.toString() );
 
                     if(friend_ids.contains(addfriend_id)){
 
@@ -141,6 +133,17 @@ public class UserDetailActivity extends AppCompatActivity {
 
     }
 
+
+    /**
+     * This method allows a user to add a selected user as a friend
+     *
+     * status 0,1,2
+     * 0: not friend
+     * 1: padding
+     * 2: already friend
+     * @param actioner_id the id of action performer
+     * @param other_userid the id of the user to be added as a friend
+     */
     private void addFriend(String actioner_id, String other_userid)
     {
 
@@ -164,7 +167,7 @@ public class UserDetailActivity extends AppCompatActivity {
 
         newFriend = new HashMap<String, String>();
         newFriend.put("Friend_id", actioner_id);
-        newFriend.put("status", "2");
+        newFriend.put("status","2");
         newFriend.put("action_user", actioner_id);
         firend_node.child(actioner_id).setValue(newFriend);
 
@@ -174,4 +177,41 @@ public class UserDetailActivity extends AppCompatActivity {
 
 
     }
+
+    /**
+     *  This method initials all components
+     */
+    private void initComponents()
+    {
+        textViewUsername = (TextView)findViewById(R.id.friendReqDetails_tvUsername);
+        textViewGender = (TextView)findViewById(R.id.friendReqDetails_tvGender);
+        textViewCountry = (TextView)findViewById(R.id.friendReqDetails_tvCountry);
+        textViewSports = (TextView)findViewById(R.id.friendReqDetails_tVSports);
+        buttonOk = (Button)findViewById(R.id.ok_btn_user_detail_activity);
+        addFriend_btn = (Button)findViewById(R.id.addfriend_btn_user_detail_act);
+    }
+
+
+    /**
+     * This method set listeners for components
+     *
+     */
+    private void setListenersForComponents()
+    {
+        addFriend_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addFriend(curr_uid,addfriend_id);
+
+            }
+        });
+
+        buttonOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+    }
+
 }

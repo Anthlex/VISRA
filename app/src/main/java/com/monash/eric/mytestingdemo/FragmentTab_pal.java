@@ -25,29 +25,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by IBM on 15/08/2016.
+ *  FragmentTab_pal is used to display registered users with similar sport interest
+ *
+ *  @author Eric
+ *  @since 1.0
  */
 public class FragmentTab_pal extends Fragment{
 
 
+    //define a variable for "Null" value
     public final static String DEF_INTEREST_NULL = "N/A";
+    //define a tag for debug
     public final static String TAG = "FragmentTab_pal";
-
-
+    //define a fireAuth variable
     private FirebaseAuth firebaseAuth;
+    //firebase user root
     private Firebase mRootRef;
+    //define a fireauth state listener
     private FirebaseAuth.AuthStateListener authStateListener;
-
-
+    //define a progressDialog object
     private ProgressDialog progressDialog;
-
-
+    //define a listview object for registered
     private ListView list_users;
 
 
     private ArrayAdapter<String> adapter;
 
-    //list of user's name
+    //list of users' name
     private ArrayList<String> userTitle;
     //list of registered user except user himself/herself
     private ArrayList<Users> userList;
@@ -56,13 +60,11 @@ public class FragmentTab_pal extends Fragment{
     //arraylist to store current user interests
     private ArrayList<String> curr_user_interest;
 
+    //current user id
     private String userKey;
     //sharedpreference object
     SharedPreferences sharedPreferences;
-    // SharedPreferences.Editor editor;
-
-    private long friendCount;
-
+    //define a valueEventListener object
     ValueEventListener valueEventListener;
 
 
@@ -71,10 +73,9 @@ public class FragmentTab_pal extends Fragment{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_layout_pal, null);
 
-
+        Log.d(TAG,"ONCREATEVIEW");
 
         Firebase.setAndroidContext(getActivity());
-
 
         userTitle = new ArrayList<>();
         userList = new ArrayList<>();
@@ -98,61 +99,6 @@ public class FragmentTab_pal extends Fragment{
 
                     userKey = firebaseAuth.getCurrentUser().getUid();
 
-                    mRootRef = new Firebase("https://visra-1d74b.firebaseio.com/Users");
-
-
-                    valueEventListener = new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                            friendCount = dataSnapshot.getChildrenCount();
-                            for (DataSnapshot child: dataSnapshot.getChildren()) {
-
-                                HashMap<String, String> userMap = (HashMap<String, String>) child.getValue();
-                                if(child.getKey().equals(userKey))
-                                {
-
-                                    continue;
-                                }
-
-                                String user_id = child.getKey();
-                                String username = userMap.get("Username");
-                                String gender = userMap.get("Gender");
-                                String birthday = userMap.get("Birthday");
-                                String country = userMap.get("Country");
-                                String sports = userMap.get("Sports");
-
-//                                if(friendCount > userList.size())
-//                                {
-                                Users users = new Users(username, gender, birthday, country, sports, user_id);
-                                userList.add(users);
-//                                }
-
-                            }
-
-                            getSimilarUser(userList, curr_user_interest);
-
-                            progressDialog.dismiss();
-
-
-                            adapter.notifyDataSetChanged();
-
-                            if(valueEventListener !=null) {
-                                mRootRef.removeEventListener(valueEventListener);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
-
-                        }
-                    };
-
-                    mRootRef.addValueEventListener(valueEventListener);
-
-
-
 
                 }
             }
@@ -163,8 +109,6 @@ public class FragmentTab_pal extends Fragment{
         sharedPreferences = getActivity().getSharedPreferences("userProfile",getActivity().MODE_PRIVATE);
 
         String interests = sharedPreferences.getString("interest",DEF_INTEREST_NULL);
-
-        Log.d(TAG,interests);
 
         //init user interest list
         curr_user_interest = new ArrayList<>();
@@ -181,8 +125,6 @@ public class FragmentTab_pal extends Fragment{
         progressDialog.show();
 
 
-
-
         list_users.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position,
@@ -190,14 +132,10 @@ public class FragmentTab_pal extends Fragment{
                 Intent intent = new Intent(getActivity(), UserDetailActivity.class);
                 Users selectedEvent = similar_interest_users.get(position);
 
-                //          Log.d(TAG,position+"");
-                //            Log.d(TAG,similar_interest_users.get(position).getUsername());
                 intent.putExtra("eventObj",selectedEvent);
                 startActivity(intent);
             }
         });
-
-
 
         return view;
     }
@@ -210,7 +148,6 @@ public class FragmentTab_pal extends Fragment{
 
         if(allUsers == null)
         {
-            Log.d(TAG,"alluser list empty");
             return similar_interest_users;
 
         }
@@ -234,8 +171,6 @@ public class FragmentTab_pal extends Fragment{
                 }
             }
 
-
-
         }
         return similar_interest_users;
     }
@@ -246,28 +181,74 @@ public class FragmentTab_pal extends Fragment{
         firebaseAuth.addAuthStateListener(authStateListener);
     }
 
-
-    //testing method for list
-    public void showAllInList(ArrayList<Users> users)
-    {
-        for(Users user : users)
-        {
-            Log.d(TAG,user.getUsername());
-        }
-    }
-
+    //clear the lists created at onCreatedView Stage
     @Override
     public void onPause() {
         super.onPause();
-
+        Log.d(TAG,"ONPAUSE");
         if(valueEventListener !=null) {
             mRootRef.removeEventListener(valueEventListener);
         }
 
-        Log.d("listsize(pals)",userTitle.size()+"");
-
         clearList();
 
+    }
+
+    //Retrieve the list of registered users from firebase
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mRootRef = new Firebase("https://visra-1d74b.firebaseio.com/Users");
+
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                for (DataSnapshot child: dataSnapshot.getChildren()) {
+
+                    HashMap<String, String> userMap = (HashMap<String, String>) child.getValue();
+                    if(child.getKey().equals(userKey))
+                    {
+
+                        continue;
+                    }
+
+                    String user_id = child.getKey();
+                    String username = userMap.get("Username");
+                    String gender = userMap.get("Gender");
+                    String birthday = userMap.get("Birthday");
+                    String country = userMap.get("Country");
+                    String sports = userMap.get("Sports");
+
+                    Users users = new Users(username, gender, birthday, country, sports, user_id);
+                    userList.add(users);
+
+                }
+
+                getSimilarUser(userList, curr_user_interest);
+
+                progressDialog.dismiss();
+
+                adapter.notifyDataSetChanged();
+                Log.d(TAG,userTitle.size()+"");
+
+
+                if(valueEventListener !=null) {
+                    mRootRef.removeEventListener(valueEventListener);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        };
+
+        mRootRef.addValueEventListener(valueEventListener);
+
+        Log.d(TAG,"onresume");
     }
 
     public void clearList()
@@ -278,8 +259,12 @@ public class FragmentTab_pal extends Fragment{
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStop() {
+        super.onStop();
+        if (authStateListener != null) {
+            firebaseAuth.removeAuthStateListener(authStateListener);
+        }
     }
+
 }
 

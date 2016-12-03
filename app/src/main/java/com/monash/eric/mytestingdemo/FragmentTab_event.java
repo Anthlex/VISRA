@@ -10,53 +10,44 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.monash.eric.mytestingdemo.Entity.Event;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Created by IBM on 15/08/2016.
+ * FragmentTab_event is used to display all the public events
+ *
+ * @author  Eric
+ * @since 1.0
  */
 public class FragmentTab_event extends Fragment {
 
 
+    //debug tag
     public static final String TAG ="FragmentTab_event";
-    private FirebaseAuth firebaseAuth;
-    private Button createEventBtn;
-    private Button showAllBtn;
+    //firebase Event root
     private Firebase mRootRef;
-    private TextView tv_result;
+    //define an arraylist to store event id
     private ArrayList<String> eventIdList;
-
-
+    //define a listview object
     private ListView list_events;
-
+    //define an arraylist to store event title
     private ArrayList<String> eventTitle;
     private ArrayAdapter<String> adapter;
+    //define an arraylist to store event objects
     private ArrayList<Event> eventList;
 
-
-    private String uid;
-
+    //define a progressdialog
     private ProgressDialog progressDialog;
 
-    private long eventCount;
-
     ValueEventListener valueEventListener;
-
-
-
-
 
 
     @Override
@@ -65,6 +56,9 @@ public class FragmentTab_event extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_layout_events, null);
         Firebase.setAndroidContext(getActivity());
+
+        Log.d("life","oncreateview");
+
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Loading...");
@@ -77,7 +71,6 @@ public class FragmentTab_event extends Fragment {
         list_events = (ListView)view.findViewById(R.id.listView);
 
         list_events.setAdapter(adapter);
-        firebaseAuth = FirebaseAuth.getInstance();
 
         mRootRef = new Firebase("https://visra-1d74b.firebaseio.com/Event");
 
@@ -155,17 +148,38 @@ public class FragmentTab_event extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("life","onstart");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("life","onresume");
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
-        if(valueEventListener !=null) {
-            mRootRef.removeEventListener(valueEventListener);
-        }
-
-        Log.d("listsize(events)",eventTitle.size()+"");
-        //  clearList();
+        Log.d("life","onpause");
 
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(valueEventListener !=null) {
+            mRootRef.removeEventListener(valueEventListener);
+        }
+        Log.d("life","onstop");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("life","ondestory");
+    }
 
     public void clearList()
     {

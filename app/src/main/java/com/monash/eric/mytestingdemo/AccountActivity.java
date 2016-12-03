@@ -17,14 +17,19 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Map;
-/*
- * AccountActivity is for view user's personal information
+/**
+ * AccountActivity is used to save user's personal information
+ *
+ * @author  Anthony, Eric
+ * @since 1.0
  */
 public class AccountActivity extends AppCompatActivity {
 
-    //firebase
+    //firebase authentication variables
     private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
+
+    //firebase root element
     private Firebase mRef;
 
     // view components
@@ -33,7 +38,6 @@ public class AccountActivity extends AppCompatActivity {
     private TextView textViewBirthday;
     private TextView textViewSports;
     private TextView textViewCountry;
-
     private Button buttonCancel;
     private Button buttonEdit;
 
@@ -44,7 +48,17 @@ public class AccountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_account);
 
 
+        //initial Components
+        initComponents();
+
+        //set listeners for components
+        setListenersForComponents();
+
+        //get fireauth instance
         firebaseAuth = FirebaseAuth.getInstance();
+
+
+        //set authentication listener
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -57,12 +71,43 @@ public class AccountActivity extends AppCompatActivity {
             }
         };
 
+        // initalize firebase library
         Firebase.setAndroidContext(this);
-
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
 
         String uid = user.getUid();
+
+        mRef = new Firebase("https://visra-1d74b.firebaseio.com/Users");
+
+
+        // retriving user's details and display them
+        getCurrentUserDetails(uid);
+
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        firebaseAuth.addAuthStateListener(authStateListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (authStateListener != null) {
+            firebaseAuth.removeAuthStateListener(authStateListener);
+        }
+    }
+
+
+    /**
+     *  This method initials all components
+     */
+    private void initComponents()
+    {
 
         textViewUsername = (TextView) findViewById(R.id.textViewUsername);
         textViewGender = (TextView) findViewById(R.id.textViewGender);
@@ -70,10 +115,43 @@ public class AccountActivity extends AppCompatActivity {
         textViewSports = (TextView) findViewById(R.id.textViewSports);
         textViewCountry = (TextView) findViewById(R.id.textViewCountry);
 
-        mRef = new Firebase("https://visra-1d74b.firebaseio.com/Users");
+        buttonEdit = (Button) findViewById(R.id.buttonEdit);
+        buttonCancel = (Button) findViewById(R.id.buttonCancel);
 
+    }
 
-        // retriving user's details
+    /**
+     * This method set listeners for components
+     *
+     */
+
+    private void setListenersForComponents()
+    {
+        buttonEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                startActivity(new Intent(AccountActivity.this, RegisterActivity.class));
+            }
+        });
+
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+    }
+
+    /**
+     *  This method retrieves user's details and display them
+     *  If the user profile is empty, it will bring user to RegisterActivity
+     *  to fill his/her personal information
+     *
+     *  @param uid current user's id
+     */
+    private void getCurrentUserDetails(String uid)
+    {
         mRef.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -134,33 +212,5 @@ public class AccountActivity extends AppCompatActivity {
 
             }
         });
-
-        buttonEdit = (Button) findViewById(R.id.buttonEdit);
-        buttonEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                startActivity(new Intent(AccountActivity.this, RegisterActivity.class));
-            }
-        });
-
-
-
-
-        buttonCancel = (Button) findViewById(R.id.buttonCancel);
-        buttonCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-    }
-
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        firebaseAuth.addAuthStateListener(authStateListener);
     }
 }

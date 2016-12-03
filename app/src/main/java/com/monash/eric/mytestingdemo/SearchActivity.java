@@ -84,9 +84,9 @@ public class SearchActivity extends AppCompatActivity implements AdapterView.OnI
         lng = intent.getDoubleExtra("lng",0);
         lat = intent.getDoubleExtra("lat",0);
 
-        Log.i(TAG, lng + " " + lat );
-        CallGeoWS callGeoWS = new CallGeoWS();
-        callGeoWS.execute(lng,lat);
+        // for testing
+//        CallGeoWS callGeoWS = new CallGeoWS();
+//        callGeoWS.execute(lng,lat);
 
 
 
