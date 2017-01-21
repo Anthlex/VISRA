@@ -17,7 +17,7 @@ System architecture
 Tech
 ----
 
-Dillinger uses a number of open source projects to work properly:
+ViSRA uses a number of open source projects to work properly:
 
 - Php
 - MySql
