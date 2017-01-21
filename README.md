@@ -2,6 +2,13 @@
 
   ViSRA(Victorian Sports and Recreation Assistance) is an mobile application which provides users aggregate information about availability and accessibility of sports and outdoor and provide networking platform to connect users with similar interests.
 
+Data Source
+----
+- Sport and recreational facilities dataset
+Source: data.vic.gov.au (Agency: Department of Health and Human Services)
+- Weather data
+Source: openweathermap.org
+
  
 License
 ----
