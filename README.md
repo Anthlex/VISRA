@@ -11,7 +11,12 @@ Data Source
 
  Source: openweathermap.org
 
- 
+System architecture
+----
+
+Application Snap Shots
+----
+
 License
 ----
 
