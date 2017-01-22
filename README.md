@@ -31,7 +31,14 @@ ViSRA uses a number of open source projects to work properly:
 
 Application Snap Shots
 ----
-![Alt text](/screenshot/Screenshot_20170121-221202.jpg?raw=true "Optional Title")
+![Main Screen](/screenshot/Screenshot_20170121-221007.jpg?raw=true "Optional Title")
+![Search](/screenshot/Screenshot_20170121-221118.jpg?raw=true "Optional Title")
+![Facility Details](/screenshot/Screenshot_20170121-221046.jpg?raw=true "Optional Title")
+![Event Screen](/screenshot/Screenshot_20170121-221138.jpg?raw=true "Optional Title")
+![Pal Screen](/screenshot/Screenshot_20170121-221151.jpg?raw=true "Optional Title")
+![Account Screen](/screenshot/Screenshot_20170121-221256.jpg?raw=true "Optional Title")
+![Create Event](/screenshot/Screenshot_20170121-221658.jpg?raw=true "Optional Title")
+![Event Details](/screenshot/Screenshot_20170121-221130.jpg?raw=true "Optional Title")
 
 
 License
