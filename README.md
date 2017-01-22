@@ -14,8 +14,10 @@ Data Source
 System architecture
 ----
 
+
 Tech
 ----
+
 
 ViSRA uses a number of open source projects to work properly:
 
@@ -29,6 +31,8 @@ ViSRA uses a number of open source projects to work properly:
 
 Application Snap Shots
 ----
+![Alt text](/screenshot/Screenshot_20170121-221202.jpg?raw=true "Optional Title")
+
 
 License
 ----
