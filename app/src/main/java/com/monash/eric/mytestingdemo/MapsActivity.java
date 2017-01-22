@@ -7,13 +7,12 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +23,7 @@ import com.google.android.gms.location.places.PlaceBuffer;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -37,6 +37,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
+//import com.monash.eric.mytestingdemo.WorkaroundMapFragment;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -84,6 +85,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private Button createEventBtn;
 
     private GoogleMap mMap;
+    private ScrollView mScrollView;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +153,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         changroom_tv.setText(changeroomType.get(changeRoom_num));
 
 
+
+
+
+
         //call weather API
         CallWeatherAPIProcess callWeatherAPIProcess = new CallWeatherAPIProcess();
         callWeatherAPIProcess.execute(new String[]{latitude+"", longtitude+""});
@@ -174,8 +182,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
+              .findFragmentById(R.id.frag_map);
         mapFragment.getMapAsync(this);
+
+     //   MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.frag_map);
+     //   mapFragment.getMapAsync(this);
+
+        mScrollView = (ScrollView) findViewById(R.id.sv_container);
+
+        ((WorkaroundMapFragment) getSupportFragmentManager().findFragmentById(R.id.frag_map)).setListener(new WorkaroundMapFragment.OnTouchListener() {
+            @Override
+            public void onTouch() {
+                mScrollView.requestDisallowInterceptTouchEvent(true);
+            }
+        });
     }
 
 

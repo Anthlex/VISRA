@@ -155,6 +155,12 @@ public class FragmentTab_facility extends ListFragment {
                 progressDialog.setMessage("Loading...");
                 progressDialog.show();
                 curr_longtitude_from_main = mCallback.getLongtitude();
+                curr_latitude_from_main = mCallback.getLatiitude();
+
+                Log.d(TAG,"CLICKEDSHOWED");
+                Log.d(TAG,"curr_longtitude_from_main  "+curr_longtitude_from_main);
+                Log.d(TAG,"curr_longtitude_from_main  "+curr_latitude_from_main);
+
 
                 CallGeoWS callGeoWS = new CallGeoWS();
                 callGeoWS.execute(curr_longtitude_from_main, curr_latitude_from_main);

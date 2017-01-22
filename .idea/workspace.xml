@@ -40,28 +40,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d6737339-d6e6-4455-a462-c8717a279527" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.14.1/taskArtifacts/cache.properties.lock" afterPath="$PROJECT_DIR$/.gradle/2.14.1/taskArtifacts/cache.properties.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.14.1/taskArtifacts/fileHashes.bin" afterPath="$PROJECT_DIR$/.gradle/2.14.1/taskArtifacts/fileHashes.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.14.1/taskArtifacts/fileSnapshots.bin" afterPath="$PROJECT_DIR$/.gradle/2.14.1/taskArtifacts/fileSnapshots.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.14.1/taskArtifacts/fileSnapshotsToTreeSnapshotsIndex.bin" afterPath="$PROJECT_DIR$/.gradle/2.14.1/taskArtifacts/fileSnapshotsToTreeSnapshotsIndex.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.14.1/taskArtifacts/taskArtifacts.bin" afterPath="$PROJECT_DIR$/.gradle/2.14.1/taskArtifacts/taskArtifacts.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.14.1/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.bin" afterPath="$PROJECT_DIR$/.gradle/2.14.1/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.bin" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.14.1/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" afterPath="$PROJECT_DIR$/.gradle/2.14.1/tasks/_app_compileDebugJavaWithJavac/localClassSetAnalysis/localClassSetAnalysis.lock" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gradle/2.14.1/tasks/_app_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" afterPath="$PROJECT_DIR$/.gradle/2.14.1/tasks/_app_compileDebugJavaWithJavac/localJarClasspathSnapshot/localJarClasspathSnapshot.lock" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/app.iml" afterPath="$PROJECT_DIR$/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/AccountActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/AccountActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/CreateEventActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/CreateEventActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/EventDetailActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/EventDetailActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_event.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_event.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_facility.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_facility.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_pal.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_pal.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_user.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_user.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/LoginActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/LoginActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/MainActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/MapsActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/MapsActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/SearchActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/SearchActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/UserDetailActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/UserDetailActivity.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_maps.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_maps.xml" />
     </list>
     <ignored path="VISRA.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -219,11 +201,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="EventDetailActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="EventDetailActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/EventDetailActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.02587519">
+            <state vertical-scroll-proportion="0.0">
               <caret line="201" column="74" selection-start-line="201" selection-start-column="74" selection-end-line="201" selection-end-column="74" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FragmentTab_facility.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_facility.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.33280253">
+              <caret line="165" column="84" selection-start-line="165" selection-start-column="61" selection-end-line="165" selection-end-column="84" />
               <folding />
             </state>
           </provider>
@@ -2751,12 +2743,12 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/AccountActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/CreateEventActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/MainActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_facility.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_user.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_pal.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/UserDetailActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_event.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/EventDetailActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_facility.java" />
       </list>
     </option>
   </component>
@@ -2791,9 +2783,10 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane" />
+      <pane id="Scope" />
+      <pane id="Scratches" />
+      <pane id="PackagesPane" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -2811,10 +2804,59 @@
               <option name="myItemId" value="VISRA" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="VISRA" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="VISRA" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mytestingdemo" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="VISRA" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="manifests" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidManifestsGroupNode" />
+            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -3161,7 +3203,13 @@
       <option name="project" value="LOCAL" />
       <updated>1476922904903</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="iteration 4.1.2&#10;&#10;bug fix&#10;&#10;1. bug that causes crashes when clicking back on user screen&#10;">
+      <created>1480750336822</created>
+      <option name="number" value="00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1480750336822</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TodoView">
@@ -3194,8 +3242,8 @@
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3270073" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.103737116" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32846716" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25260416" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25260416" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32846716" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -3222,7 +3270,8 @@
     <MESSAGE value="iteration 4&#10;&#10;bug fix and usability improments&#10;" />
     <MESSAGE value="iteration 4.1&#10;&#10;bug fix and UI changes&#10;" />
     <MESSAGE value="iteration 4.1.1&#10;&#10;bug fix and UI changes&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="iteration 4.1.1&#10;&#10;bug fix and UI changes&#10;" />
+    <MESSAGE value="iteration 4.1.2&#10;&#10;bug fix&#10;&#10;1. bug that causes crashes when clicking back on user screen&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="iteration 4.1.2&#10;&#10;bug fix&#10;&#10;1. bug that causes crashes when clicking back on user screen&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -3595,13 +3644,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_facility.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="602" column="0" selection-start-line="602" selection-start-column="0" selection-end-line="603" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -3660,8 +3702,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/EventDetailActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.02587519">
+        <state vertical-scroll-proportion="0.0">
           <caret line="201" column="74" selection-start-line="201" selection-start-column="74" selection-end-line="201" selection-end-column="74" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/monash/eric/mytestingdemo/FragmentTab_facility.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33280253">
+          <caret line="165" column="84" selection-start-line="165" selection-start-column="61" selection-end-line="165" selection-end-column="84" />
           <folding />
         </state>
       </provider>
