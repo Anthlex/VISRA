@@ -11,9 +11,6 @@ Data Source
 
  Source: openweathermap.org
 
-System architecture
-----
-
 
 Tech
 ----
