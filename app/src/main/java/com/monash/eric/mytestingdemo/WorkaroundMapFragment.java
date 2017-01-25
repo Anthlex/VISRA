@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.google.android.gms.maps.SupportMapFragment;
 
 /**
- * Created by zhijiexie on 22/1/17.
+ * Created by zhijiexie on 23/1/17.
  *
  * Create a custom SupportMapFragmet so that we can override its touch event
  */
